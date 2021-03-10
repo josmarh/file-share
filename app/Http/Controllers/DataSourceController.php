@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Models\DataSources;
 
 class DataSourceController extends Controller
@@ -15,7 +16,7 @@ class DataSourceController extends Controller
     public function index()
     {
         $dataSources = DataSources::paginate(10);
-        return view('data-source.index', compact('dataSources'));
+        return view('data-sources.index', compact('dataSources'));
     }
 
     /**
@@ -36,18 +37,15 @@ class DataSourceController extends Controller
      */
     public function store(Request $request)
     {
-        
-    }
+        $request->validate([
+            'datasource' => 'required'
+        ]);
+        $datasource = new DataSources([
+            'name' => $request->get('datasource')
+        ]);
+        $datasource->save();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect()->route('data-sources')->withStatus('Data Source successfully created.');
     }
 
     /**
@@ -58,7 +56,10 @@ class DataSourceController extends Controller
      */
     public function edit(Request $request)
     {
-        //
+        $id = $request->sourceId;
+        $datasource = DataSources::findOrFail($id);
+
+        return view('data-sources.edit', compact('datasource'));
     }
 
     /**
@@ -70,7 +71,11 @@ class DataSourceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $datasource = DataSources::findOrFail($id);
+        $datasource->name = $request->input('datasource');
+        $datasource->save();
+
+        return redirect()->route('data-sources')->withStatus('Data Source successfully updated.');
     }
 
     /**
@@ -81,6 +86,9 @@ class DataSourceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $datasource = DataSources::findOrFail($id);
+        $datasource->delete();
+
+        return redirect()->route('data-sources')->withStatus('Data Source deleted!');
     }
 }
