@@ -15,9 +15,10 @@ class CreateFsEmailSubscribersTable extends Migration
     {
         Schema::create('fs_email_subscribers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->string('name', 50);
+            $table->string('email', 100);
             $table->timestamps();
-            $table->dateTime('deleted_at');
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

@@ -15,13 +15,9 @@ class EmailSubscribers extends Model
 
     public $table = 'fs_email_subscribers';
     protected $fillable = [
-        'user_id',
+        'name',
+        'email',
         'status',
     ];
 
-
-    public function user()
-    {
-        return belongTo(User::class, 'user_id', 'id');
-    }
 }

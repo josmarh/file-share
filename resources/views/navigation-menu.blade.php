@@ -17,8 +17,18 @@
                     </x-jet-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('file-uploads') }}" :active="request()->routeIs('file-uploads')">
+                        {{ __('File Upload') }}
+                    </x-jet-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
                         {{ __('Data Sources') }}
+                    </x-jet-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('mail-subscribers') }}" :active="request()->routeIs('mail-subscribers')">
+                        {{ __('Mail Subscription') }}
                     </x-jet-nav-link>
                 </div>
             </div>
@@ -145,6 +155,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
+                {{ __('Data Sources') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('mail-subscribers') }}" :active="request()->routeIs('mail-subscribers')">
+                {{ __('Mail Subscription') }}
             </x-jet-responsive-nav-link>
         </div>
 

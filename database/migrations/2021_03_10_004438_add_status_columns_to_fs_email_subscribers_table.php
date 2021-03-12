@@ -15,7 +15,7 @@ class AddStatusColumnsToFsEmailSubscribersTable extends Migration
     {
         Schema::table('fs_email_subscribers', function (Blueprint $table) {
             $table->smallInteger('status', 1)
-                    ->after('user_id')
+                    ->after('email')
                     ->nullable();
         });
     }

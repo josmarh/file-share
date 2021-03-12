@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\User;
+use App\Models\DataSources;
 
 class Transactions extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    // use SoftDeletes;
 
     public $table = 'fs_transactions';
     protected $fillable = [
@@ -26,11 +27,11 @@ class Transactions extends Model
 
     public function user()
     {
-        return belongTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id','id');
     }
 
-    public function dataSources()
+    public function datasources()
     {
-        return belongTo(DataSources::class, 'data_source_id', 'id');
+        return $this->belongTo(DataSources::class, 'data_source_id', 'id');
     }
 }

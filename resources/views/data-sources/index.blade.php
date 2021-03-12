@@ -11,13 +11,14 @@
             <div class="card-body">
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create"> New Data Source</button> <br><br>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create"> <b>New Data Source</b> </button> <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
-                        <thead class="thead-dark">
+                        <thead class="bg-primary" style="color:#ffffff;">
                             <tr>
                                 <th scope="col">Data Souce</th>
                                 <th scope="col">Edit</th> 
@@ -45,20 +46,14 @@
             </div>
              <!-- The Modal -->
              <div class="modal fade" id="create">
-                <div class="modal-dialog modal-md">
+                <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content">
                         <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title"><b>New Data Source</b></h4>
+                        <div class="modal-header bg-primary" style="color:#ffffff;">
+                            <h4 class="modal-title "><b>New Data Source</b></h4>
                         </div>
                         <!-- Modal body -->
                         <div class="modal-body">
-
-                            @if (session('status'))
-                                <div class="alert alert-success" role="alert">
-                                    {{ session('status') }}
-                                </div>
-                            @endif
                             @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -76,7 +71,7 @@
                                     <input type="text" id="ds-field" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                             focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"  name="datasource" required />
                                 </div>
-                                <button type="submit" class="btn btn-success float-right" id="btn">Save </button>
+                                <button type="submit" class="btn btn-primary float-right" id="btn">Save </button>
                             </form>
                         </div>
                     </div>
@@ -85,11 +80,11 @@
 
             <!-- edit modal -->
             <div class="modal fade" id="edit-modal">
-                <div class="modal-dialog modal-md">
+                <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content">
                         <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title"><b>Update Data Source</b></h4>
+                        <div class="modal-header bg-primary" style="color:#ffffff;">
+                            <h4 class="modal-title thead-dark"><b>Update Data Source</b></h4>
                         </div>
                         <!-- Modal body -->
                         <div class="modal-body update-ds"></div>

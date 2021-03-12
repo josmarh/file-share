@@ -22,7 +22,7 @@ class CreateFsTransactionsTable extends Migration
             $table->string('file_type');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
-            $table->dateTime('deleted_at');
+            $table->dateTime('deleted_at')->nullable();
         });
     }
 

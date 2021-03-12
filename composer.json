@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "Fileshare",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "The Fileshare Platform",
     "keywords": [
         "framework",
         "laravel"
