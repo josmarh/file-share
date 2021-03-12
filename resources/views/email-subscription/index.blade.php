@@ -50,35 +50,40 @@
                                         <a href="" data-toggle="dropdown"><span class="material-icons">more_vert</span></a>
 
                                         <div class="dropdown-menu">
-                                        
-                                            <form method="POST" action="{{ route('mail-subscribers.status', $mailSubscriber->id) }}">
-                                            @csrf
-                                            @method('put')
-                                            
-                                            <div align="center">
-                                                <input type="hidden" id="main-status{{$mailSubscriber->id}}" name="status">
-                                                
-                                                <button onclick="return confirm('Are you very sure?')" id="ms-btn{{$mailSubscriber->id}}" class="btn btn-sm dropdown-item" style="font-size:10px">
-                                                <span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">file_download_done</span> <br> Subscribe</button>
-                                            </div>
-                                            </form>
-                                            
-                                            <div align="center">
-                                                
-                                                <button class="btn btn-sm dropdown-item edit-ms" style="font-size:10px" data-id="{{$mailSubscriber->id}}">
-                                                <span class="material-icons">mode_edit</span> <br> Edit</button>
-                                            </div>
 
-                                            <form method="POST" action="{{ route('mail-subscribers.destroy', $mailSubscriber->id) }}">
-                                                @csrf
-                                                @method('delete')
-                                                <div align="center">
-                                                    
-                                                    <button onclick="return confirm('Are you very sure?')" class="btn btn-sm dropdown-item" style="font-size:10px">
-                                                    <span class="material-icons">delete_sweep</span> <br> Delete</button>
+                                                <div class="row">
+                                                    <div class="col-xs-6">
+                                                        <form method="POST" action="{{ route('mail-subscribers.status', $mailSubscriber->id) }}">
+                                                        @csrf
+                                                        @method('put')
+                                                        <div align="center">
+                                                            <input type="hidden" id="main-status{{$mailSubscriber->id}}" name="status">
+                                                            
+                                                            <button onclick="return confirm('Are you very sure?')" id="ms-btn{{$mailSubscriber->id}}" class="btn btn-sm dropdown-item" style="font-size:10px">
+                                                            <span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">file_download_done</span> <br> Subscribe</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col-xs-6">
+                                                        <div align="center">
+                                                            <button class="btn btn-sm dropdown-item edit-ms" style="font-size:10px" data-id="{{$mailSubscriber->id}}">
+                                                            <span class="material-icons">mode_edit</span> <br> Edit</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </form>
-                                        
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <form method="POST" action="{{ route('mail-subscribers.destroy', $mailSubscriber->id) }}">
+                                                            @csrf
+                                                            @method('delete')
+                                                            <div align="center">
+                                                                
+                                                                <button onclick="return confirm('Are you very sure?')" class="btn btn-sm dropdown-item" style="font-size:10px">
+                                                                <span class="material-icons">delete_sweep</span> <br> Delete</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             
                                         </div>
                                     </div>

@@ -37,9 +37,9 @@
                                 <th scope="col">Action</th> 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="up-tb">
                             @foreach($fileUploads as $fileUpload)
-                            <tr>
+                            <tr data-id="{{$fileUpload->id}}">
                                 <td>{{ $fileUpload->file_name }}</td>
                                 <td>{{ $fileUpload->file_type }}</td>
                                 <td>
@@ -56,15 +56,39 @@
                                         <a href="" data-toggle="dropdown" ><span class="material-icons">more_vert</span></a>
 
                                         <div class="dropdown-menu">
-                                            <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
-                                                @csrf
-                                                @method('delete')
-                                                <div align="center">
-                                                    
-                                                    <button onclick="return confirm('Are you very sure?')" class="btn btn-sm " style="font-size:10px">
-                                                    <span class="material-icons">delete_sweep</span> <br> Delete</button>
+
+                                        <div class="row">
+                                            <div class="col-xs-6" >
+                                                <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <div align="center">
+                                                        <button onclick="return confirm('Are you very sure?')" class="btn btn btn-xs " style="font-size:10px">
+                                                        <span class="material-icons">delete_sweep</span> <br> Delete</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-xs-6" >
+                                                <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
+                                                            value="{{ route('file-uploads.download', $fileUpload->id) }}">
+                                                <div align="center" >
+                                                    <button class="btn btn-xs btn sdropdown-item cp-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
+                                                    <span class="material-icons">insert_link</span> <br> Copy Link</button>
                                                 </div>
-                                            </form>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <div align="center" >
+                                                    <a href="{{ route('file-uploads.download', $fileUpload->id) }}" class="dropdown-item" style="font-size:10px" >
+                                                    <span class="material-icons">file_download</span> <br> Download </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                           
+                                        
                                         </div>
                                     </div>
                                 </td>
@@ -99,10 +123,10 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="file">Data source</label>
+                                    <label for="file">Choose a File</label>
                                     <input type="file" id="file-up-field" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                             focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="file" 
-                                            accept=".csv, .pdf, .zip, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
+                                            accept=".csv, text/csv, .pdf, .zip, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
                                     <span style="color:red; font-size:15px">accept only .csv, .xls, .xlsx, .pdf, .zip upto 500mb</span>
                                 </div>
                                 <button type="submit" class="btn btn-primary float-right" id="btn">Save </button>
@@ -111,7 +135,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -131,23 +154,22 @@ $(function(){
         }
     });
 
-    $('.edit-ds').click(function(){
-        var sourceId = $(this).data('id');
-        $.ajax({
-            url: "{{ url('/data-sources/edit') }}",
-            method: 'get',
-            data: {
-                sourceId: sourceId,
-            },
-            success: function(result){
-                $('.update-ds').html(result);
+        
+    $('.cp-btn').click(function(){
+        /* Get the text field */
+        var dataId = $(this).data('id');
+        var copyText = $('#cp-field'+dataId).val();   
+        var $temp = $("<input>");
+        $("body").append($temp);
 
-                // Display Modal
-                $('#edit-modal').modal('show');
-            }
-        });
+        // console.log(copyText);  
+        $temp.val(copyText).select();
+        document.execCommand("copy");
+        $temp.remove();
 
+        alert("Download link copied!");
     });
+
 
 });
 </script>

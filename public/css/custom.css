@@ -2,3 +2,8 @@
 .dotted-icon::-moz-focus-inner {
     border: 0;
  }
+
+ .btns:hover {
+    color: #fff !important;
+    text-decoration: none;
+    }

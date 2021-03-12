@@ -18,7 +18,8 @@ class FileUploadsController extends Controller
     public function index()
     {
         $dataSource = DataSources::orderBy('name','asc')->get();
-        $fileUploads = Transactions::paginate(10);
+        $fileUploads = Transactions::orderBy('id','desc')->paginate(10);
+
         return view('file-uploads.index', compact('fileUploads','dataSource'));
     }
 
@@ -38,7 +39,7 @@ class FileUploadsController extends Controller
         $messages = [
             'datasource.required' => 'A data source must selected',
             'file.required' => 'A file must be chosen',
-        ];
+        ]; 
 
         $uploadFile = new Transactions;
 
@@ -72,32 +73,20 @@ class FileUploadsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function download($id)
     {
-        //
-    }
+        $fileUploads = Transactions::findOrFail($id);
+        $headers = array(
+            'Content-Type: application/pdf',
+            'Content-Type: application/zip',
+            'Content-Type: text/csv',
+            'Content-Type: application/vnd.ms-excel',
+            'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet ',
+            'Content-Type: application/vnd.oasis.opendocument.text'
+        );
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return Storage::disk('local')
+                        ->download('files-upload/'.$fileUploads->file_name.'.'.$fileUploads->file_type, $fileUploads->file_hash, $headers );
     }
 
     /**
@@ -110,7 +99,6 @@ class FileUploadsController extends Controller
     {
         $fileUploads = Transactions::findOrFail($id);
 
-        // $getFileDetails = Transactions::where('id', $id)->select('file_name', 'file_type')->first();
         Storage::disk('local')->delete('files-upload/'.$fileUploads->file_name.'.'.$fileUploads->file_type);
         $fileUploads->delete();
 
