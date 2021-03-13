@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Transactions;
 use App\Models\DataSources;
-use Illuminate\Support\Facades\Storage;
+use App\Models\EmailSubscribers;
+
+use Mail;
+use App\Mail\UserUploadNotification;
+use App\Mail\TeamUploadNotification;
 
 class FileUploadsController extends Controller
 {
@@ -62,6 +67,22 @@ class FileUploadsController extends Controller
         $uploadFile->file_name = $datasourceName.'-'.date('dmY');
         $uploadFile->data_source_id = $request->get('datasource');
         $uploadFile->user_id = auth()->user()->id;
+
+        $fileDetails = [
+            'user_name' => $uploadFile->user->name,
+            'file_name' => $fileName,
+        ];
+        Mail::to($uploadFile->user->email)->send(new UserUploadNotification($fileDetails));
+
+        $subscribers = EmailSubscribers::where('status', 1)->get();
+        
+        foreach($subscribers as $subscriber ){
+            $fileDetail = [
+                'file_name' => $fileName,
+                'subscriber_name' => $subscriber->name,
+            ];
+            Mail::to($subscriber->email)->send(new TeamUploadNotification($fileDetail));
+        }
         $uploadFile->save();
         
         return redirect()->route('file-uploads')->withStatus('File uploaded successfully!');

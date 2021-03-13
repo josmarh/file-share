@@ -1,12 +1,17 @@
 @component('mail::message')
-# Introduction
 
-The body of your message.
+{{ __('Hello '.$subscriberName.',') }}
 
-@component('mail::button', ['url' => ''])
-Button Text
+{{ __('A File has been uploaded on Fileshare.') }}
+
+@component('mail::panel')
+# {{ __($fileName) }}
+@endcomponent
+
+@component('mail::button', ['url' => route('file-uploads') ])
+View File
 @endcomponent
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('app.name').' Team.' }}
 @endcomponent

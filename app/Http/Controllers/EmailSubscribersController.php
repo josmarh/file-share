@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\EmailSubscribers;
+use App\Models\User;
 
 class EmailSubscribersController extends Controller
 {
@@ -93,5 +94,20 @@ class EmailSubscribersController extends Controller
         $mailSubscribers->save();
 
         return redirect()->route('mail-subscribers');
+    }
+
+    public function users()
+    {
+        $user = User::paginate(10);
+        return view('email-subscription.users', compact('user'));
+    }
+
+    public function userRole(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->user_type = $request->input('role');
+        $user->save();
+
+        return redirect()->route('users')->withStatus('User Role Changed');
     }
 }

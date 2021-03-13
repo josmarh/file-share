@@ -1,7 +1,7 @@
 {
-    "name": "Fileshare",
+    "name": "laravel/laravel",
     "type": "project",
-    "description": "The Fileshare Platform",
+    "description": "The Laravel Framework.",
     "keywords": [
         "framework",
         "laravel"
@@ -16,7 +16,8 @@
         "laravel/jetstream": "^2.2",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
-        "livewire/livewire": "^2.0"
+        "livewire/livewire": "^2.0",
+        "santigarcor/laratrust": "^6.3"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

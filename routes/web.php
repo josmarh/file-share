@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataSourceController;
 use App\Http\Controllers\EmailSubscribersController;
 use App\Http\Controllers\FileUploadsController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,12 +22,14 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/data-sources', [DataSourceController::class, 'index'])->name('data-sources');
     Route::post('/data-sources/post',[DataSourceController::class, 'store'])->name('data-sources.store');
@@ -40,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/dmail-subscribers/update/{id}',[EmailSubscribersController::class, 'update'])->name('mail-subscribers.update');
     Route::delete('/mail-subscribers/destroy/{id}',[EmailSubscribersController::class, 'destroy'])->name('mail-subscribers.destroy');
     Route::put('/mail-subscribers/status/{id}',[EmailSubscribersController::class, 'status'])->name('mail-subscribers.status');
+
+    Route::put('/user/role/{id}',[EmailSubscribersController::class, 'userRole'])->name('user.role');
+    Route::get('/users',[EmailSubscribersController::class, 'users'])->name('users');
 
     Route::get('/file-uploads', [FileUploadsController::class, 'index'])->name('file-uploads');
     Route::post('/file-uploads/post',[FileUploadsController::class, 'store'])->name('file-uploads.store');

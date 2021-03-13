@@ -6,4 +6,25 @@
  .btns:hover {
     color: #fff !important;
     text-decoration: none;
-    }
+}
+
+.inner-text {
+   color: #ffffff;
+   font-size: 20px;
+   font-family: Arial, Helvetica, sans-serif;
+   padding: 10px 10px;
+   text-transform: capitalize;
+}
+
+.count-text {
+   color: #ffffff;
+   text-align: center;
+   font-size: 30px;
+   font-weight: bold;
+}
+
+.box-icon {
+   color: #ffffff;
+   font-size: 80px;
+   padding: 5px 5px;
+}

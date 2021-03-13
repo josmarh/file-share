@@ -1,12 +1,13 @@
 @component('mail::message')
-# Introduction
 
-The body of your message.
+{{ __('Hello '.$userName.',') }}
 
-@component('mail::button', ['url' => ''])
-Button Text
+{{ __('Your File has been uploaded successfully.') }}
+
+@component('mail::panel')
+# {{ __($fileName) }}
 @endcomponent
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('app.name').' Team.' }}
 @endcomponent
