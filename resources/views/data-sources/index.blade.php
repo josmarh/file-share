@@ -15,7 +15,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create"> <b>New Data Source</b> </button> <br><br>
+                <button type="button" class="btn btn-primary btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Data Source"> + </button> <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
@@ -63,7 +63,7 @@
                                 </ul>
                             </div><br />
                             @endif
-
+                            
                             <form method="POST" action="{{ route('data-sources.store') }}" id="dsource">
                                 @csrf
                                 <div class="form-group">
@@ -73,6 +73,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary float-right" id="btn">Save </button>
                             </form>
+                           
                         </div>
                     </div>
                 </div>
@@ -98,16 +99,12 @@
 <script>
 $(function(){
 
-    $("#btn").click(function(){
+    $("#btn").submit(function(){
 
         if( $('#ds-field').val() )
         {
             $(this).attr('disabled','disabled');
-            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Saving...')
-
-            return true;
-        }else{
-            return false;
+            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Saving...');
         }
     });
 

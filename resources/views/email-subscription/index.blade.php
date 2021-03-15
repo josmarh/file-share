@@ -23,7 +23,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create"><b>New Subscriber</b></button> <br><br>
+                <button type="button" class="btn btn-primary btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button> <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 
@@ -59,14 +59,14 @@
                                                         <div align="center">
                                                             <input type="hidden" id="main-status{{$mailSubscriber->id}}" name="status">
                                                             
-                                                            <button onclick="return confirm('Are you very sure?')" id="ms-btn{{$mailSubscriber->id}}" class="btn btn-sm dropdown-item" style="font-size:10px">
+                                                            <button onclick="return confirm('Are you very sure?')" id="ms-btn{{$mailSubscriber->id}}" class="btn btn-xs dropdown-item action-btn" style="font-size:10px">
                                                             <span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">file_download_done</span> <br> Subscribe</button>
                                                         </div>
                                                         </form>
                                                     </div>
                                                     <div class="col-xs-6">
                                                         <div align="center">
-                                                            <button class="btn btn-sm dropdown-item edit-ms" style="font-size:10px" data-id="{{$mailSubscriber->id}}">
+                                                            <button class="btn btn-sm dropdown-item edit-ms action-btn" style="font-size:10px" data-id="{{$mailSubscriber->id}}">
                                                             <span class="material-icons">mode_edit</span> <br> Edit</button>
                                                         </div>
                                                     </div>
@@ -78,7 +78,7 @@
                                                             @method('delete')
                                                             <div align="center">
                                                                 
-                                                                <button onclick="return confirm('Are you very sure?')" class="btn btn-sm dropdown-item" style="font-size:10px">
+                                                                <button onclick="return confirm('Are you very sure?')" class="btn btn-sm dropdown-item action-btn" style="font-size:10px">
                                                                 <span class="material-icons">delete_sweep</span> <br> Delete</button>
                                                             </div>
                                                         </form>
@@ -162,7 +162,7 @@ $(function(){
     }); 
 
     $('.edit-ms').click(function(){
-        console.log('working');
+        // console.log('working');
         var msId = $(this).data('id');
         $.ajax({
             url: "{{ url('/mail-subscribers/edit') }}",
@@ -190,7 +190,7 @@ $(function(){
 
         if ( $('#status'+arr[i]).text() === 'Subscribed' )
         {
-            $('#ms-btn'+arr[i]).html('<span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">clear</span> <br> Unsubscribed');
+            $('#ms-btn'+arr[i]).html('<span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">clear</span> <br> Unsubscribe');
             // $('#ms-btn'+arr[i]).removeClass( "btn-outline-success" ).addClass( "btn-outline-warning" );
             $('#main-status'+arr[i]).val('2');
             
@@ -200,7 +200,7 @@ $(function(){
         }
     }
 
-    $("#btn").click(function(){
+    $("#btn").submit(function(){
 
         if( $('#ms-name').val() && $('#ms-email').val() )
         {

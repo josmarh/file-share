@@ -28,3 +28,58 @@
    font-size: 80px;
    padding: 5px 5px;
 }
+
+.action-btn{
+   background-color:transparent;
+   outline: none;
+}
+
+.action-btn:hover{
+   background-color:transparent;
+   outline: none;
+}
+
+.action-btn:active{
+   background-color:transparent;
+   outline: none;
+}
+
+.creator {
+   border-radius: 50%;
+   border:0;
+   font-weight: bolder;
+   text-align: center;
+   background-color:rgb(253,216,53);
+   color:#766518;
+   font-size: 25px;
+   padding:8px 20px;
+   box-shadow: 3px 3px 3px #C2C2C2;
+   outline: none;
+}
+
+.creator:hover {
+   background-color:rgb(253,216,53);
+   color: #766518;
+   border:0;
+}
+
+.creator:focus {
+   background-color:rgb(253,216,53);
+   color: #766518;
+   border-color: rgb(253,216,53);
+   outline: none;
+}
+
+.creator:active {
+   background-color:rgb(253,216,53);
+   color: #766518;
+   border-color:rgb(253,216,53);
+   outline: none;
+}
+
+.creator:visited {
+   background-color:rgb(253,216,53);
+   color: #766518;
+   border-color:rgb(253,216,53);
+   outline: none;
+}

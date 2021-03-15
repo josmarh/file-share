@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Transactions;
 use App\Models\DataSources;
 use App\Models\EmailSubscribers;
+use App\Models\User;
 
 use Mail;
 use App\Mail\UserUploadNotification;
@@ -26,6 +27,16 @@ class FileUploadsController extends Controller
         $fileUploads = Transactions::orderBy('id','desc')->paginate(10);
 
         return view('file-uploads.index', compact('fileUploads','dataSource'));
+    }
+
+    public function getUserMail(Request $request)
+    {
+        $userMail = $request->getUser;
+        $userList = User::select('id','email')
+                        ->where('email','like', '%'.$userMail.'%')
+                        ->get();
+
+        return view('file-uploads.user-list', compact('userList'));
     }
 
     /**
@@ -50,10 +61,11 @@ class FileUploadsController extends Controller
 
         if($request->hasFile('file'))
         {
-            $datasourceName = DataSources::where('id', $request->get('datasource'))->value('name');
+            // $datasourceName = DataSources::where('id', $request->get('datasource'))->value('name');
             $getFile = $request->file('file');
+            $getFileName = $request->get('filename').'-'.date('dmYHm');
             
-            $fileName = $datasourceName.'-'.date('dmY').'.'.$getFile->extension();
+            $fileName = $getFileName.'.'.$getFile->getClientOriginalExtension();
            
             $path = Storage::putFileAs(
                 'files-upload', $request->file('file'), $fileName
@@ -62,28 +74,35 @@ class FileUploadsController extends Controller
         }
 
         $uploadFile->file_size = $size;
-        $uploadFile->file_type = $request->file('file')->extension();
-        $uploadFile->file_hash = md5($datasourceName).'.'.$request->file('file')->extension();
-        $uploadFile->file_name = $datasourceName.'-'.date('dmY');
+        $uploadFile->file_type = $request->file('file')->getClientOriginalExtension();
+        $uploadFile->file_hash = md5($getFileName).'.'.$request->file('file')->getClientOriginalExtension();
+        $uploadFile->file_name = $getFileName;
         $uploadFile->data_source_id = $request->get('datasource');
         $uploadFile->user_id = auth()->user()->id;
+        $uploadFile->direct_user_mail = $request->get('direct-email');
+        $uploadFile->save();
 
+        // $directUserMail = User::select('name')->where('email', $uploadFile->direct_user_mail)->first();
         $fileDetails = [
             'user_name' => $uploadFile->user->name,
             'file_name' => $fileName,
+            'subscriber_name' => '',
         ];
-        Mail::to($uploadFile->user->email)->send(new UserUploadNotification($fileDetails));
+        // Mail::to($uploadFile->user->email)->send(new UserUploadNotification($fileDetails));
 
-        $subscribers = EmailSubscribers::where('status', 1)->get();
+        if( is_null($uploadFile->direct_user_mail)){
+            $subscribers = EmailSubscribers::where('status', 1)->get();
         
-        foreach($subscribers as $subscriber ){
-            $fileDetail = [
-                'file_name' => $fileName,
-                'subscriber_name' => $subscriber->name,
-            ];
-            Mail::to($subscriber->email)->send(new TeamUploadNotification($fileDetail));
+            foreach($subscribers as $subscriber ){
+                $fileDetails = [
+                    'file_name' => $fileName,
+                    'subscriber_name' => $subscriber->name,
+                ];
+                Mail::to($subscriber->email)->send(new TeamUploadNotification($fileDetails));
+            }
+        }else{
+            Mail::to($uploadFile->direct_user_mail)->send(new TeamUploadNotification($fileDetails));
         }
-        $uploadFile->save();
         
         return redirect()->route('file-uploads')->withStatus('File uploaded successfully!');
     }

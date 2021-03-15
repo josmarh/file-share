@@ -9,20 +9,20 @@
 </div><br />
 @endif
 
-<form method="POST" action="{{ route('data-sources.update', $datasource->id) }}" id="dsource">
+<form method="POST" action="{{ route('data-sources.update', $datasource->id) }}" >
     @csrf
     @method('put')
     <div class="form-group">
         <label for="datasource">Data source</label>
         <input type="text" id="ds-field-update" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
-                focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" value="{{ $datasource->name }}" name="datasource" required />
+                focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" value="{{ $datasource->name }}" name="datasource-edit" required />
     </div>
     <button type="submit" class="btn btn-primary float-right" id="btn-update">Update </button>
 </form>
 
 <script>
 $(function(){
-    $("#btn-update").click(function(){
+    $("#btn-update").submit(function(){
 
         if( $('#ds-field-update').val() )
         {

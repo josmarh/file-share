@@ -21,7 +21,7 @@
                         {{ __('File Upload') }}
                     </x-jet-nav-link>
                 </div>
-                @if (auth()->user()->user_type == 1)
+                @if (auth()->user()->hasRole('superadministrator'))
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
                         {{ __('Data Sources') }}
@@ -166,7 +166,7 @@
             <x-jet-responsive-nav-link href="{{ route('file-uploads') }}" :active="request()->routeIs('file-uploads')">
                 {{ __('File Upload') }}
             </x-jet-responsive-nav-link>
-            @if (auth()->user()->user_type == 1)
+            @if (auth()->user()->hasRole('superadministrator'))
             <x-jet-responsive-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
                 {{ __('Data Sources') }}
             </x-jet-responsive-nav-link>

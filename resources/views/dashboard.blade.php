@@ -174,21 +174,23 @@
 
                                                 <div class="dropdown-menu">
                                                     <div class="row">
+                                                    @if (auth()->user()->user_type == 1)
                                                         <div class="col-xs-6" >
                                                             <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
                                                                 @csrf
                                                                 @method('delete')
                                                                 <div align="center">
-                                                                    <button onclick="return confirm('Are you very sure?')" class="btn btn btn-xs " style="font-size:10px">
+                                                                    <button onclick="return confirm('Are you very sure?')" class="btn btn-xs action-btn" style="font-size:10px">
                                                                     <span class="material-icons">delete_sweep</span> <br> Delete</button>
                                                                 </div>
                                                             </form>
                                                         </div>
+                                                    @endif
                                                         <div class="col-xs-6" >
                                                             <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
                                                                         value="{{ route('file-uploads.download', $fileUpload->id) }}">
                                                             <div align="center" >
-                                                                <button class="btn btn-xs btn sdropdown-item cp-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
+                                                                <button class="btn btn-xs sdropdown-item cp-btn action-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
                                                                 <span class="material-icons">insert_link</span> <br> Copy Link</button>
                                                             </div>
                                                         </div>

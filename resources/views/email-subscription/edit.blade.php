@@ -28,7 +28,7 @@
 
 <script>
 $(function(){
-    $("#btn-update").click(function(){
+    $("#btn-update").submit(function(){
 
         if( $('#ms-name-update').val() && $('#ms-email-update').val() )
         {

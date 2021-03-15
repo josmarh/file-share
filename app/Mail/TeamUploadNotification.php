@@ -10,16 +10,16 @@ use Illuminate\Queue\SerializesModels;
 class TeamUploadNotification extends Mailable
 {
     use Queueable, SerializesModels;
-    protected $fileDetail;
+    protected $fileDetails;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($fileDetail)
+    public function __construct($fileDetails)
     {
-        $this->fileDetail = $fileDetail;
+        $this->fileDetails = $fileDetails;
     }
 
     /**
@@ -33,8 +33,8 @@ class TeamUploadNotification extends Mailable
                     ->subject('New File Upload')
                     ->markdown('mails.team-upload-notification')
                     ->with([
-                        'subscriberName'=>$this->fileDetail['subscriber_name'],
-                        'fileName'=> $this->fileDetail['file_name'],
+                        'subscriberName'=>$this->fileDetails['subscriber_name'],
+                        'fileName'=> $this->fileDetails['file_name'],
                     ]);
     }
 }

@@ -24,7 +24,9 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create"> <b>Upload File</b> </button> <br><br>
+                <button type="button" class="creator btn btn-lg " data-toggle="modal" data-target="#create" title="Upload New File">
+                    + </button> 
+                <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
@@ -58,21 +60,23 @@
                                         <div class="dropdown-menu">
 
                                         <div class="row">
+                                        @if (auth()->user()->user_type == 1)
                                             <div class="col-xs-6" >
                                                 <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
                                                     @csrf
                                                     @method('delete')
                                                     <div align="center">
-                                                        <button onclick="return confirm('Are you very sure?')" class="btn btn btn-xs " style="font-size:10px">
+                                                        <button onclick="return confirm('Are you very sure?')" class="btn btn btn-xs action-btn" style="font-size:10px">
                                                         <span class="material-icons">delete_sweep</span> <br> Delete</button>
                                                     </div>
                                                 </form>
                                             </div>
+                                        @endif
                                             <div class="col-xs-6" >
                                                 <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
                                                             value="{{ route('file-uploads.download', $fileUpload->id) }}">
                                                 <div align="center" >
-                                                    <button class="btn btn-xs btn sdropdown-item cp-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
+                                                    <button class="btn btn-xs btn sdropdown-item cp-btn action-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
                                                     <span class="material-icons">insert_link</span> <br> Copy Link</button>
                                                 </div>
                                             </div>
@@ -123,6 +127,17 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="filename">File Name</label>
+                                    <input type="text"  class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="filename" required />
+                                </div>
+                                <div class="form-group" style="display:none" id="user">
+                                    <label for="email">User to Notify</label>
+                                    <input type="email" id="direct-email" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="direct-email" />
+                                    <div id="user-list"></div>
+                                </div>
+                                <div class="form-group">
                                     <label for="file">Choose a File</label>
                                     <input type="file" id="file-up-field" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                             focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="file" 
@@ -135,13 +150,32 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 
 <script>
 $(function(){
 
-    $("#btn").click(function(){
+    $('#direct-email').keyup(function(){
+        var getUser = $(this).val();
+
+        if (getUser != ''){
+            $.ajax({
+                url: "{{ url('/file-uploads/directemail') }}",
+                method: 'get',
+                data: {
+                    getUser: getUser,
+                },
+                success: function(result){
+                    $('#user-list').html(result);
+                }
+            });
+        }
+    });
+
+    $("#btn").submit(function(){
 
         if( $('#file-up-field').val() && $.isNumeric( $('#ds-up-field').val() ) )
         {
@@ -154,7 +188,15 @@ $(function(){
         }
     });
 
-        
+    $('#ds-up-field').change(function(){
+
+        if($(this).val() == 16 ){
+            $('#user').show();
+        }else{
+            $('#user').hide();
+        }
+    });
+
     $('.cp-btn').click(function(){
         /* Get the text field */
         var dataId = $(this).data('id');
@@ -169,7 +211,6 @@ $(function(){
 
         alert("Download link copied!");
     });
-
 
 });
 </script>

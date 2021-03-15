@@ -62,7 +62,7 @@ class DataSourceController extends Controller
     public function update(Request $request, $id)
     {
         $datasource = DataSources::findOrFail($id);
-        $datasource->name = $request->input('datasource');
+        $datasource->name = $request->input('datasource-edit');
         $datasource->save();
 
         return redirect()->route('data-sources')->withStatus('Data Source successfully updated.');
@@ -81,4 +81,9 @@ class DataSourceController extends Controller
 
         return redirect()->route('data-sources')->withStatus('Data Source deleted!');
     }
+
+    // public function create()
+    // {
+    //     return view('data-sources.create');
+    // }
 }
