@@ -23,7 +23,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-primary btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button> <br><br>
+                <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button> <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 

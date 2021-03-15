@@ -60,7 +60,7 @@
                                         <div class="dropdown-menu">
 
                                         <div class="row">
-                                        @if (auth()->user()->user_type == 1)
+                                        @if (auth()->user()->hasRole('superadministrator'))
                                             <div class="col-xs-6" >
                                                 <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
                                                     @csrf
@@ -71,8 +71,11 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                        @endif
+                                    
                                             <div class="col-xs-6" >
+                                        @else
+                                            <div class="col-md-12" >
+                                        @endif
                                                 <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
                                                             value="{{ route('file-uploads.download', $fileUpload->id) }}">
                                                 <div align="center" >

@@ -160,7 +160,9 @@
                                         <td>{{ $fileUpload->file_name }}</td>
                                         <td>{{ $fileUpload->file_type }}</td>
                                         <td>
-                                        @if( $fileUpload->file_size / 1000000 <= 0.9 )
+                                        @if($fileUpload->file_size == 0)
+                                            {{ $fileUpload->file_size }}
+                                        @elseif( $fileUpload->file_size / 1000000 <= 0.9 )
                                             {{ round(($fileUpload->file_size / 1000),1).'KB' }} 
                                         @else
                                             {{ round(($fileUpload->file_size / 1000000),1).'MB'  }} 

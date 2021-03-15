@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\EmailSubscribers;
 use App\Models\User;
+use App\Models\RoleUser;
 
 class EmailSubscribersController extends Controller
 {
@@ -104,9 +105,11 @@ class EmailSubscribersController extends Controller
 
     public function userRole(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-        $user->user_type = $request->input('role');
-        $user->save();
+        // $userId = User::findOrFail($id);
+        $roleId = $request->input('role');
+
+        RoleUser::where('user_id', $id)
+                ->update([ 'role_id' => $roleId ]);
 
         return redirect()->route('users')->withStatus('User Role Changed');
     }

@@ -32,9 +32,9 @@
                             <tr data-id="{{$users->id}}">
                                 <td>{{ $users->name }}</td>
                                 <td>{{ $users->email }}</td>
-                                @if ($users->user_type == 1)
+                                @if (auth()->user()->hasRole('superadministrator'))
                                 <td><span  id="status{{$users->id}}" >{{ 'Admin' }}</span></td>
-                                @else
+                                @elseif ((auth()->user()->hasRole('user')))
                                 <td><span  >{{ 'Basic User' }}</span></td>
                                 @endif
                                 
@@ -83,7 +83,7 @@ $(function(){
     // console.log(arr);
     for (var i=0; i<arr.length; i++){
 
-        if ( $('#status'+arr[i]).text() === 'Admin' )
+        if ( $('#status'+arr[i]).text() == 'Admin' )
         {
             $('#ms-btn'+arr[i]).html('<span class="material-icons" id="sub-icon{{$users->id}}">person</span> <br> Make Basic User');
             // $('#ms-btn'+arr[i]).removeClass( "btn-outline-success" ).addClass( "btn-outline-warning" );
