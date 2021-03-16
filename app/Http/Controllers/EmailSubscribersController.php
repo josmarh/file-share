@@ -82,8 +82,9 @@ class EmailSubscribersController extends Controller
      */
     public function destroy($id)
     {
-        $mailSubscribers = EmailSubscribers::findOrFail($id);
-        $mailSubscribers->delete();
+            $mailSubscribers = EmailSubscribers::findOrFail($id);
+            $mailSubscribers->delete();
+ 
 
         return redirect()->route('mail-subscribers')->withStatus('Subscriber deleted!');
     }
@@ -99,7 +100,10 @@ class EmailSubscribersController extends Controller
 
     public function users()
     {
-        $user = User::paginate(10);
+        $user = User::join('role_user', 'users.id','=','role_user.user_id')
+                    ->select('id','name','email','role_user.role_id')
+                    ->paginate(10);
+
         return view('email-subscription.users', compact('user'));
     }
 
@@ -112,5 +116,15 @@ class EmailSubscribersController extends Controller
                 ->update([ 'role_id' => $roleId ]);
 
         return redirect()->route('users')->withStatus('User Role Changed');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $id=$request->id;
+        foreach($id as $ids){
+            $mailSubscribers = EmailSubscribers::findOrFail($ids)->delete();
+        }
+
+        return redirect()->route('mail-subscribers')->withStatus('Subscriber deleted!');
     }
 }

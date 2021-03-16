@@ -26,7 +26,7 @@
 .box-icon {
    color: #ffffff;
    font-size: 80px;
-   padding: 5px 5px;
+   padding: 5px 25px 15px 10px;
 }
 
 .action-btn{
@@ -82,4 +82,38 @@
    color: #766518;
    border-color:rgb(253,216,53);
    outline: none;
+}
+
+.deletor {
+   border-radius: 50%;
+   border:0;
+   font-weight: bolder;
+   text-align: center;
+   color:#766518;
+   background-color:#DC3F45;
+   font-size: 25px;
+   padding:8px 20px;
+   box-shadow: 3px 3px 3px #C2C2C2;
+   outline: none;
+   margin-left: 20px; 
+}
+
+.deletor:hover{
+   background-color:#DC3F45;
+   color:#766518;
+}
+
+.deletor:visited{
+   background-color:#DC3F45;
+   color:#766518;
+}
+
+.deletor:active{
+   background-color:#DC3F45;
+   color:#766518;
+}
+
+.deletor:focus{
+   background-color:#DC3F45;
+   color:#766518;
 }

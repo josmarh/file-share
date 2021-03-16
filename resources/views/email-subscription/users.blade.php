@@ -32,9 +32,9 @@
                             <tr data-id="{{$users->id}}">
                                 <td>{{ $users->name }}</td>
                                 <td>{{ $users->email }}</td>
-                                @if (auth()->user()->hasRole('superadministrator'))
+                                @if ( $users->role_id == 1)
                                 <td><span  id="status{{$users->id}}" >{{ 'Admin' }}</span></td>
-                                @elseif ((auth()->user()->hasRole('user')))
+                                @else
                                 <td><span  >{{ 'Basic User' }}</span></td>
                                 @endif
                                 

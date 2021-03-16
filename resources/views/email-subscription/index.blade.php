@@ -23,11 +23,14 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button> <br><br>
+                <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button>
+                <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button>
+                 <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 
                             <tr>
+                                <th><input type="checkbox"  id="checkall"></th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Status</th>
@@ -36,7 +39,10 @@
                         </thead>
                         <tbody id="ms-tb">
                             @foreach($mailSubscribers as $mailSubscriber)
-                            <tr data-id="{{$mailSubscriber->id}}">
+                            <tr id="{{$mailSubscriber->id}}" data-id="{{$mailSubscriber->id}}">
+                                <td>
+                                    <input type="checkbox" class="bulk-check" value="{{$mailSubscriber->id}}">
+                                </td>
                                 <td>{{ $mailSubscriber->name }}</td>
                                 <td>{{ $mailSubscriber->email }}</td>
                                 @if ($mailSubscriber->status == 1)
@@ -60,7 +66,7 @@
                                                             <input type="hidden" id="main-status{{$mailSubscriber->id}}" name="status">
                                                             
                                                             <button onclick="return confirm('Are you very sure?')" id="ms-btn{{$mailSubscriber->id}}" class="btn btn-xs dropdown-item action-btn" style="font-size:10px">
-                                                            <span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">file_download_done</span> <br> Subscribe</button>
+                                                            <span class="material-icons" >file_download_done</span> <br> Subscribe</button>
                                                         </div>
                                                         </form>
                                                     </div>
@@ -155,11 +161,60 @@
 
 <script>
 $(function(){
-    $('[data-toggle="popover"]').popover({
-        'trigger': 'focus',
-        'placement': 'left',
-        html:true,
-    }); 
+    // bulk delete
+    $('#checkall').click(function(){
+
+        if ($(this).prop('checked') == true){
+            $('.bulk-check').prop('checked',true);
+            $('#del-btn').show();
+        }else{
+            $('.bulk-check').prop('checked',false);
+            $('#del-btn').hide();
+        }
+    });
+
+    $('#ms-tb :checkbox').change(function(){
+
+        if($('#ms-tb :checkbox:not(:checked)').length == 0){ 
+            // all are checked
+            $('#checkall').prop('checked', true);
+            $('#del-btn').show();
+        } else if($('#ms-tb :checkbox:checked').length >  0){
+            // all are unchecked
+            $('#checkall').prop('checked', false);
+            $('#del-btn').show();
+        }else{
+            $('#del-btn').hide();
+        }
+    });
+
+    $('#del-btn').click(function(){
+        if(confirm("Are you sure you want to delete this?")){
+            var delId = [];
+
+            $('.bulk-check:checked').each(function(i){
+                delId.push($(this).val());
+                element = this;
+            });
+
+            if(delId.length>0){
+                $.ajax({
+                    url: '/mail-subscribers/bulkdelete',
+                    method: 'get',
+                    data: {id:delId},
+                    success:function(){
+                        for(var i=0; i<delId.length; i++)
+                        {
+                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
+                            $('tr#'+delId[i]+'').fadeOut('slow');
+                            $('#checkall').prop('checked', false);
+                            $('#del-btn').hide();
+                        }
+                    }
+                });
+            }
+        }
+    });
 
     $('.edit-ms').click(function(){
         // console.log('working');
@@ -188,9 +243,9 @@ $(function(){
     // console.log(arr);
     for (var i=0; i<arr.length; i++){
 
-        if ( $('#status'+arr[i]).text() === 'Subscribed' )
+        if ( $('#status'+arr[i]).text() == 'Subscribed' )
         {
-            $('#ms-btn'+arr[i]).html('<span class="material-icons" id="sub-icon{{$mailSubscriber->id}}">clear</span> <br> Unsubscribe');
+            $('#ms-btn'+arr[i]).html('<span class="material-icons" >clear</span> <br> Unsubscribe');
             // $('#ms-btn'+arr[i]).removeClass( "btn-outline-success" ).addClass( "btn-outline-warning" );
             $('#main-status'+arr[i]).val('2');
             

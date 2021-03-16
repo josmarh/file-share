@@ -26,11 +26,15 @@
                 @endif
                 <button type="button" class="creator btn btn-lg " data-toggle="modal" data-target="#create" title="Upload New File">
                     + </button> 
+                <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button>
                 <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
                             <tr>
+                            @if (auth()->user()->hasRole('superadministrator'))
+                                <th><input type="checkbox"  id="checkall"></th>
+                            @endif
                                 <th scope="col">File Name</th>
                                 <th scope="col">File Type</th>
                                 <th scope="col">File Size</th>
@@ -41,7 +45,12 @@
                         </thead>
                         <tbody id="up-tb">
                             @foreach($fileUploads as $fileUpload)
-                            <tr data-id="{{$fileUpload->id}}">
+                            <tr data-id="{{$fileUpload->id}}" id="{{$fileUpload->id}}">
+                            @if (auth()->user()->hasRole('superadministrator'))
+                                <td>
+                                    <input type="checkbox" class="bulk-check" value="{{$fileUpload->id}}">
+                                </td>
+                            @endif
                                 <td>{{ $fileUpload->file_name }}</td>
                                 <td>{{ $fileUpload->file_type }}</td>
                                 <td>
@@ -160,6 +169,61 @@
 
 <script>
 $(function(){
+
+    // bulk delete
+    $('#checkall').click(function(){
+
+        if ($(this).prop('checked') == true){
+            $('.bulk-check').prop('checked',true);
+            $('#del-btn').show();
+        }else{
+            $('.bulk-check').prop('checked',false);
+            $('#del-btn').hide();
+        }
+        });
+
+        $('#up-tb :checkbox').change(function(){
+
+        if($('#up-tb :checkbox:not(:checked)').length == 0){ 
+            // all are checked
+            $('#checkall').prop('checked', true);
+            $('#del-btn').show();
+        } else if($('#up-tb :checkbox:checked').length >  0){
+            // all are unchecked
+            $('#checkall').prop('checked', false);
+            $('#del-btn').show();
+        }else{
+            $('#del-btn').hide();
+        }
+        });
+
+        $('#del-btn').click(function(){
+        if(confirm("Are you sure you want to delete this?")){
+            var delId = [];
+
+            $('.bulk-check:checked').each(function(i){
+                delId.push($(this).val());
+                element = this;
+            });
+
+            if(delId.length>0){
+                $.ajax({
+                    url: '/file-uploads/bulkdelete',
+                    method: 'get',
+                    data: {id:delId},
+                    success:function(){
+                        for(var i=0; i<delId.length; i++)
+                        {
+                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
+                            $('tr#'+delId[i]+'').fadeOut('slow');
+                            $('#checkall').prop('checked', false);
+                            $('#del-btn').hide();
+                        }
+                    }
+                });
+            }
+        }
+        });
 
     $('#direct-email').keyup(function(){
         var getUser = $(this).val();

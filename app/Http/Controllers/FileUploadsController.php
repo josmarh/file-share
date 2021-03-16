@@ -114,7 +114,7 @@ class FileUploadsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function download($id)
-    {
+    {   
         $fileUploads = Transactions::findOrFail($id);
         $headers = array(
             'Content-Type: application/pdf',
@@ -126,7 +126,7 @@ class FileUploadsController extends Controller
         );
 
         return Storage::disk('local')
-                        ->download('files-upload/'.$fileUploads->file_name.'.'.$fileUploads->file_type, $fileUploads->file_hash, $headers );
+                      ->download('files-upload/'.$fileUploads->file_name.'.'.$fileUploads->file_type, $fileUploads->file_hash, $headers );
     }
 
     /**
@@ -143,5 +143,17 @@ class FileUploadsController extends Controller
         $fileUploads->delete();
 
         return redirect()->route('file-uploads')->withStatus('File deleted!');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $id=$request->id;
+        foreach($id as $ids){
+            $fileUploads = Transactions::findOrFail($ids);
+            Storage::disk('local')->delete('files-upload/'.$fileUploads->file_name.'.'.$fileUploads->file_type);
+            $fileUploads->delete();
+        }
+
+        return redirect()->route('mail-subscribers')->withStatus('Subscriber deleted!');
     }
 }

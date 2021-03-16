@@ -34,11 +34,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/file-uploads', [FileUploadsController::class, 'index'])->name('file-uploads');
     Route::post('/file-uploads/post',[FileUploadsController::class, 'store'])->name('file-uploads.store');
     Route::post('/file-uploads/post/direct',[FileUploadsController::class, 'sendDirect'])->name('file-uploads.store.direct');
-    Route::delete('/file-uploads/destroy{id}',[FileUploadsController::class, 'destroy'])->name('file-uploads.destroy');
     Route::get('/file-uploads/directemail',[FileUploadsController::class, 'getUserMail'])->name('file-uploads.getmail');
 });
 
 Route::middleware(['auth', 'role:superadministrator'])->group(function () {
+    
+    Route::delete('/file-uploads/destroy{id}',[FileUploadsController::class, 'destroy'])->name('file-uploads.destroy');
+    Route::get('/file-uploads/bulkdelete',[FileUploadsController::class, 'bulkDelete'])->name('file-uploads.delete');
 
     Route::get('/data-sources', [DataSourceController::class, 'index'])->name('data-sources');
     Route::post('/data-sources/post',[DataSourceController::class, 'store'])->name('data-sources.store');
@@ -54,6 +56,7 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::put('/dmail-subscribers/update/{id}',[EmailSubscribersController::class, 'update'])->name('mail-subscribers.update');
     Route::delete('/mail-subscribers/destroy/{id}',[EmailSubscribersController::class, 'destroy'])->name('mail-subscribers.destroy');
     Route::put('/mail-subscribers/status/{id}',[EmailSubscribersController::class, 'status'])->name('mail-subscribers.status');
+    Route::get('/mail-subscribers/bulkdelete',[EmailSubscribersController::class, 'bulkDelete'])->name('mail-subscribers.delete');
 
     Route::put('/user/role/{id}',[EmailSubscribersController::class, 'userRole'])->name('user.role');
     Route::get('/users',[EmailSubscribersController::class, 'users'])->name('users');
