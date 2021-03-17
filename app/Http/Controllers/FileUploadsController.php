@@ -24,7 +24,7 @@ class FileUploadsController extends Controller
     public function index()
     {
         $dataSource = DataSources::orderBy('name','asc')->get();
-        $fileUploads = Transactions::orderBy('id','desc')->paginate(10);
+        $fileUploads = Transactions::sortable()->orderBy('id','desc')->paginate(10);
 
         return view('file-uploads.index', compact('fileUploads','dataSource'));
     }
@@ -154,6 +154,6 @@ class FileUploadsController extends Controller
             $fileUploads->delete();
         }
 
-        return redirect()->route('mail-subscribers')->withStatus('Subscriber deleted!');
+        return redirect()->route('file-uploads')->withStatus('File deleted!');
     }
 }

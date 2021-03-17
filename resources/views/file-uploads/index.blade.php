@@ -35,11 +35,11 @@
                             @if (auth()->user()->hasRole('superadministrator'))
                                 <th><input type="checkbox"  id="checkall"></th>
                             @endif
-                                <th scope="col">File Name</th>
-                                <th scope="col">File Type</th>
-                                <th scope="col">File Size</th>
+                                <th scope="col">@sortablelink('file_name','File Name')</th>
+                                <th scope="col">@sortablelink('file_type','File Type')</th>
+                                <th scope="col">@sortablelink('file_size','File Size')</th>
                                 <th scope="col">Uploaded By</th>
-                                <th scope="col">Date Uploaded</th>
+                                <th scope="col">@sortablelink('created_at','Date Uploaded')</th>
                                 <th scope="col">Action</th> 
                             </tr>
                         </thead>

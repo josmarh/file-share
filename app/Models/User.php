@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Traits\LaratrustUserTrait;
+use Kyslik\ColumnSortable\Sortable;
 
 class User extends Authenticatable
 {
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use Sortable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +31,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+    ];
+
+    public $sortable = [
+        'name',
+        'email',
     ];
 
     /**

@@ -15,7 +15,7 @@ class DataSourceController extends Controller
      */
     public function index()
     {
-        $dataSources = DataSources::paginate(10);
+        $dataSources = DataSources::sortable()->paginate(10);
         return view('data-sources.index', compact('dataSources'));
     }
 
@@ -78,6 +78,16 @@ class DataSourceController extends Controller
     {
         $datasource = DataSources::findOrFail($id);
         $datasource->delete();
+
+        return redirect()->route('data-sources')->withStatus('Data Source deleted!');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $id=$request->id;
+        foreach($id as $ids){
+            $mailSubscribers = DataSources::findOrFail($ids)->delete();
+        }
 
         return redirect()->route('data-sources')->withStatus('Data Source deleted!');
     }

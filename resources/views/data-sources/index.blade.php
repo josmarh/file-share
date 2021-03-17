@@ -15,19 +15,24 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Data Source"> + </button> <br><br>
+                <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Data Source"> + </button>
+                <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button> <br><br>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
                             <tr>
-                                <th scope="col">Data Souce</th>
+                                <th><input type="checkbox"  id="checkall"></th>
+                                <th scope="col">@sortablelink('name')</th>
                                 <th scope="col">Edit</th> 
                                 <th scope="col">Delete</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="ds-tb">
                             @foreach($dataSources as $dataSource)
-                            <tr>
+                            <tr id="{{$dataSource->id}}">
+                                <td>
+                                    <input type="checkbox" class="bulk-check" value="{{$dataSource->id}}">
+                                </td>
                                 <td>{{ $dataSource->name }}</td>
                                 <td><a href="#" class="edit-ds" data-id="{{$dataSource->id}}">Edit</a></td>
                                 <td>
@@ -98,6 +103,60 @@
 
 <script>
 $(function(){
+    // bulk delete
+    $('#checkall').click(function(){
+
+        if ($(this).prop('checked') == true){
+            $('.bulk-check').prop('checked',true);
+            $('#del-btn').show();
+        }else{
+            $('.bulk-check').prop('checked',false);
+            $('#del-btn').hide();
+        }
+    });
+
+    $('#ds-tb :checkbox').change(function(){
+
+        if($('#ds-tb :checkbox:not(:checked)').length == 0){ 
+            // all are checked
+            $('#checkall').prop('checked', true);
+            $('#del-btn').show();
+        } else if($('#ds-tb :checkbox:checked').length >  0){
+            // all are unchecked
+            $('#checkall').prop('checked', false);
+            $('#del-btn').show();
+        }else{
+            $('#del-btn').hide();
+        }
+    });
+
+    $('#del-btn').click(function(){
+        if(confirm("Are you sure you want to delete this?")){
+            var delId = [];
+
+            $('.bulk-check:checked').each(function(i){
+                delId.push($(this).val());
+                element = this;
+            });
+
+            if(delId.length>0){
+                $.ajax({
+                    url: '/data-sources/bulkdelete',
+                    method: 'get',
+                    data: {id:delId},
+                    success:function(){
+                        for(var i=0; i<delId.length; i++)
+                        {
+                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
+                            $('tr#'+delId[i]+'').fadeOut('slow');
+                            $('#checkall').prop('checked', false);
+                            $('#del-btn').hide();
+                        }
+                    }
+                });
+            }
+        }
+    });
 
     $("#btn").submit(function(){
 

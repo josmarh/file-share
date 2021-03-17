@@ -47,6 +47,7 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::get('/data-sources/edit',[DataSourceController::class, 'edit'])->name('data-sources.edit');
     Route::put('/data-sources/update/{id}',[DataSourceController::class, 'update'])->name('data-sources.update');
     Route::delete('/data-sources/destroy/{id}',[DataSourceController::class, 'destroy'])->name('data-sources.destroy');
+    Route::get('/data-sources/bulkdelete',[DataSourceController::class, 'bulkDelete'])->name('file-uploads.delete');
 
     Route::get('/data-sources/create', [DataSourceController::class, 'create'])->name('data-sources.create');
 

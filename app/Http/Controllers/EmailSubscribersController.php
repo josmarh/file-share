@@ -17,7 +17,7 @@ class EmailSubscribersController extends Controller
      */
     public function index()
     {
-        $mailSubscribers = EmailSubscribers::paginate(10);
+        $mailSubscribers = EmailSubscribers::sortable()->paginate(10);
         return view('email-subscription.index', compact('mailSubscribers'));
     }
 
@@ -100,7 +100,7 @@ class EmailSubscribersController extends Controller
 
     public function users()
     {
-        $user = User::join('role_user', 'users.id','=','role_user.user_id')
+        $user = User::sortable()->join('role_user', 'users.id','=','role_user.user_id')
                     ->select('id','name','email','role_user.role_id')
                     ->paginate(10);
 

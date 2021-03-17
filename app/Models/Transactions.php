@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 // use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 use App\Models\User;
 use App\Models\DataSources;
@@ -12,6 +14,7 @@ use App\Models\DataSources;
 class Transactions extends Model
 {
     use HasFactory;
+    use Sortable;
     // use SoftDeletes;
 
     public $table = 'fs_transactions';
@@ -22,6 +25,12 @@ class Transactions extends Model
         'file_size',
         'file_type',
         'user_id',
+    ];
+    public $sortable = [
+        'file_name',
+        'file_type',
+        'file_size',
+        'created_at',
     ];
 
 

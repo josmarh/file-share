@@ -21,9 +21,9 @@
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 
                             <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Role</th>
+                                <th scope="col">@sortablelink('name')</th>
+                                <th scope="col">@sortablelink('email')</th>
+                                <th scope="col">{{ __('Role') }}</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -33,9 +33,9 @@
                                 <td>{{ $users->name }}</td>
                                 <td>{{ $users->email }}</td>
                                 @if ( $users->role_id == 1)
-                                <td><span  id="status{{$users->id}}" >{{ 'Admin' }}</span></td>
+                                <td><span  id="status{{$users->id}}" >{{ __('Admin') }}</span></td>
                                 @else
-                                <td><span  >{{ 'Basic User' }}</span></td>
+                                <td><span  >{{ __('Basic User') }}</span></td>
                                 @endif
                                 
                                 <td align="center">

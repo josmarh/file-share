@@ -31,8 +31,8 @@
                         <thead class="bg-primary" style="color:#ffffff;"> 
                             <tr>
                                 <th><input type="checkbox"  id="checkall"></th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Email</th>
+                                <th scope="col">@sortablelink('name')</th>
+                                <th scope="col">@sortablelink('email')</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Action</th>
                             </tr>
