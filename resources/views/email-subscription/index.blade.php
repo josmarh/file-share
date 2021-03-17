@@ -25,7 +25,39 @@
                 @endif
                 <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button>
                 <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button>
-                 <br><br>
+                <button class="btn btn-outline-primary" style="margin-left: 20px;" id="filter">Filters <span class="material-icons">filter_list</span></button> <br><br>
+
+                <form method="GET" action="{{ route('mail-subscribers.search') }}" id="filter-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" :value="old('name')" name="name" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" :value="old('email')" name="email" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select :value="old('status')" name="status" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                                    <option value="0">Choose Status</option>
+                                    <option value="1">Subscribed</option>
+                                    <option value="2">Unsubscribed</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn bg-primary" style="color:#ffffff;">Search</button> 
+                </form><br>
+                 
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 
@@ -58,7 +90,7 @@
                                         <div class="dropdown-menu">
 
                                                 <div class="row">
-                                                    <div class="col-xs-6">
+                                                    <div class="col-sm-12">
                                                         <form method="POST" action="{{ route('mail-subscribers.status', $mailSubscriber->id) }}">
                                                         @csrf
                                                         @method('put')
@@ -70,24 +102,14 @@
                                                         </div>
                                                         </form>
                                                     </div>
-                                                    <div class="col-xs-6">
+                                                    
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
                                                         <div align="center">
                                                             <button class="btn btn-sm dropdown-item edit-ms action-btn" style="font-size:10px" data-id="{{$mailSubscriber->id}}">
                                                             <span class="material-icons">mode_edit</span> <br> Edit</button>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <form method="POST" action="{{ route('mail-subscribers.destroy', $mailSubscriber->id) }}">
-                                                            @csrf
-                                                            @method('delete')
-                                                            <div align="center">
-                                                                
-                                                                <button onclick="return confirm('Are you very sure?')" class="btn btn-sm dropdown-item action-btn" style="font-size:10px">
-                                                                <span class="material-icons">delete_sweep</span> <br> Delete</button>
-                                                            </div>
-                                                        </form>
                                                     </div>
                                                 </div>
                                             
@@ -161,6 +183,12 @@
 
 <script>
 $(function(){
+    $('#filter-section').hide();
+
+    $('#filter').click(function(){
+        $('#filter-section').toggle();
+    });
+
     // bulk delete
     $('#checkall').click(function(){
 

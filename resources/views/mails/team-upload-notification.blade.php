@@ -11,6 +11,9 @@
 @component('mail::button', ['url' => route('file-uploads') ])
 View File
 @endcomponent
+@component('mail::button', ['url' => route('file-uploads.download',$fileId) ])
+Download File
+@endcomponent
 
 Thanks,<br>
 {{ config('app.name').' Team.' }}

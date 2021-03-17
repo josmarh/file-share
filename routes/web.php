@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 use App\Http\Controllers\DataSourceController;
 use App\Http\Controllers\EmailSubscribersController;
@@ -26,6 +27,22 @@ Route::get('/', function () {
 //     return view('dashboard');
 // })->name('dashboard');
 
+// email verification route
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -47,9 +64,10 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::get('/data-sources/edit',[DataSourceController::class, 'edit'])->name('data-sources.edit');
     Route::put('/data-sources/update/{id}',[DataSourceController::class, 'update'])->name('data-sources.update');
     Route::delete('/data-sources/destroy/{id}',[DataSourceController::class, 'destroy'])->name('data-sources.destroy');
-    Route::get('/data-sources/bulkdelete',[DataSourceController::class, 'bulkDelete'])->name('file-uploads.delete');
+    Route::get('/data-sources/bulkdelete',[DataSourceController::class, 'bulkDelete'])->name('data-sources.delete');
+    Route::get('/data-sources/search',[DataSourceController::class, 'search'])->name('data-sources.search');
 
-    Route::get('/data-sources/create', [DataSourceController::class, 'create'])->name('data-sources.create');
+    // Route::get('/data-sources/create', [DataSourceController::class, 'create'])->name('data-sources.create');
 
     Route::get('/mail-subscribers', [EmailSubscribersController::class, 'index'])->name('mail-subscribers');
     Route::post('/mail-subscribers/post',[EmailSubscribersController::class, 'store'])->name('mail-subscribers.store');
@@ -58,6 +76,7 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::delete('/mail-subscribers/destroy/{id}',[EmailSubscribersController::class, 'destroy'])->name('mail-subscribers.destroy');
     Route::put('/mail-subscribers/status/{id}',[EmailSubscribersController::class, 'status'])->name('mail-subscribers.status');
     Route::get('/mail-subscribers/bulkdelete',[EmailSubscribersController::class, 'bulkDelete'])->name('mail-subscribers.delete');
+    Route::get('/mail-subscribers/search',[EmailSubscribersController::class, 'search'])->name('mail-subscribers.search');
 
     Route::put('/user/role/{id}',[EmailSubscribersController::class, 'userRole'])->name('user.role');
     Route::get('/users',[EmailSubscribersController::class, 'users'])->name('users');

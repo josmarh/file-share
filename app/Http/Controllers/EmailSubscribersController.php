@@ -10,6 +10,15 @@ use App\Models\RoleUser;
 
 class EmailSubscribersController extends Controller
 {
+    public function search(Request $request)
+    {
+        $mailSubscribers = EmailSubscribers::sortable()
+                                        ->where('name','like', '%'.$request->name.'%')
+                                        ->orWhere('email','like', '%'.$request->email.'%')
+                                        ->paginate(10);
+
+        return view('email-subscription.index', compact('mailSubscribers'));
+    }
     /**
      * Display a listing of the resource.
      *

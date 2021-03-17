@@ -69,22 +69,7 @@
                                         <div class="dropdown-menu">
 
                                         <div class="row">
-                                        @if (auth()->user()->hasRole('superadministrator'))
-                                            <div class="col-xs-6" >
-                                                <form method="POST" action="{{ route('file-uploads.destroy', $fileUpload->id) }}" class="dropdown-item">
-                                                    @csrf
-                                                    @method('delete')
-                                                    <div align="center">
-                                                        <button onclick="return confirm('Are you very sure?')" class="btn btn btn-xs action-btn" style="font-size:10px">
-                                                        <span class="material-icons">delete_sweep</span> <br> Delete</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                    
-                                            <div class="col-xs-6" >
-                                        @else
                                             <div class="col-md-12" >
-                                        @endif
                                                 <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
                                                             value="{{ route('file-uploads.download', $fileUpload->id) }}">
                                                 <div align="center" >

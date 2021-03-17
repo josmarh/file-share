@@ -8,6 +8,17 @@ use App\Models\DataSources;
 
 class DataSourceController extends Controller
 {
+    public function search(Request $request)
+    {
+        // return DataSources::search($request->search)->get();
+
+        $dataSources = DataSources::sortable()
+                                    ->where('name','like', '%'.$request->dssearch.'%')
+                                    ->paginate(10);
+
+        return view('data-sources.index', compact('dataSources'));
+    }
+
     /**
      * Display a listing of the resource.
      *

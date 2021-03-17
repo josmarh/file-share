@@ -35,6 +35,7 @@ class TeamUploadNotification extends Mailable
                     ->with([
                         'subscriberName'=>$this->fileDetails['subscriber_name'],
                         'fileName'=> $this->fileDetails['file_name'],
+                        'fileId' => $this->fileDetails['file_id'],
                     ]);
     }
 }

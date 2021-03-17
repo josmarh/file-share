@@ -16,7 +16,22 @@
                     </div>
                 @endif
                 <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Data Source"> + </button>
-                <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button> <br><br>
+                <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button> 
+                <button class="btn btn-outline-primary" style="margin-left: 20px;" id="filter">Filters <span class="material-icons">filter_list</span></button> <br><br>
+
+                <form method="GET" action="{{ route('data-sources.search') }}" id="filter-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="datasource">Data source</label>
+                                <input type="text" :value="old('dssearch')" name="dssearch" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn bg-primary" style="color:#ffffff;">Search</button> 
+                </form><br>
+                
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
@@ -103,6 +118,12 @@
 
 <script>
 $(function(){
+    $('#filter-section').hide();
+
+    $('#filter').click(function(){
+        $('#filter-section').toggle();
+    });
+
     // bulk delete
     $('#checkall').click(function(){
 

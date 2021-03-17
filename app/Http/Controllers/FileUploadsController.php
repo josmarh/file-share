@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Log;
 
 use App\Models\Transactions;
 use App\Models\DataSources;
@@ -63,7 +64,7 @@ class FileUploadsController extends Controller
         {
             // $datasourceName = DataSources::where('id', $request->get('datasource'))->value('name');
             $getFile = $request->file('file');
-            $getFileName = $request->get('filename').'-'.date('dmYHm');
+            $getFileName = $request->get('filename').'-'.rand();
             
             $fileName = $getFileName.'.'.$getFile->getClientOriginalExtension();
            
@@ -82,14 +83,21 @@ class FileUploadsController extends Controller
         $uploadFile->direct_user_mail = $request->get('direct-email');
         $uploadFile->save();
 
+        // get user name that is available on the db for direct sending
         // $directUserMail = User::select('name')->where('email', $uploadFile->direct_user_mail)->first();
+
+        // get id for current uploaded file from transaction table
+        $fileId = Transactions::select('id')->where('file_name', $getFileName)->first();
         $fileDetails = [
             'user_name' => $uploadFile->user->name,
             'file_name' => $fileName,
             'subscriber_name' => '',
+            'file_id'=> $fileId->id,
         ];
+        // sending... to user who uploaded the file
         // Mail::to($uploadFile->user->email)->send(new UserUploadNotification($fileDetails));
 
+        // if direct user mail does not exist send mail to subscribers else send mail to direct usermail
         if( is_null($uploadFile->direct_user_mail)){
             $subscribers = EmailSubscribers::where('status', 1)->get();
         
@@ -97,6 +105,7 @@ class FileUploadsController extends Controller
                 $fileDetails = [
                     'file_name' => $fileName,
                     'subscriber_name' => $subscriber->name,
+                    'file_id' => $fileId->id,
                 ];
                 Mail::to($subscriber->email)->send(new TeamUploadNotification($fileDetails));
             }
