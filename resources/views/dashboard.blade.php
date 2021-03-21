@@ -202,7 +202,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $fileUploads->links() }}
                         </div>
                         </div>
                     </div>

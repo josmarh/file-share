@@ -6,18 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\DataSources;
 
+
 class DataSourceController extends Controller
 {
-    public function search(Request $request)
-    {
-        // return DataSources::search($request->search)->get();
-
-        $dataSources = DataSources::sortable()
-                                    ->where('name','like', '%'.$request->dssearch.'%')
-                                    ->paginate(10);
-
-        return view('data-sources.index', compact('dataSources'));
-    }
 
     /**
      * Display a listing of the resource.
@@ -26,7 +17,24 @@ class DataSourceController extends Controller
      */
     public function index()
     {
-        $dataSources = DataSources::sortable()->paginate(10);
+        $search = request()->query('search');
+
+        if ($search){
+
+            $dataSources = DataSources::sortable()
+
+                ->where('name','like', '%'.$search.'%')
+                
+                ->paginate(10);
+
+        }else{
+
+            $dataSources = DataSources::sortable()
+            
+                ->paginate(10);
+
+        }
+        
         return view('data-sources.index', compact('dataSources'));
     }
 

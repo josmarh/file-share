@@ -24,10 +24,38 @@ class FileUploadsController extends Controller
      */
     public function index()
     {
-        $dataSource = DataSources::orderBy('name','asc')->get();
-        $fileUploads = Transactions::sortable()->orderBy('id','desc')->paginate(10);
+        $fname = request()->query('file_name');
+        $creator = request()->query('created_by');
+        $created_from = request()->query('created_from');
+        $created_to = request()->query('created_to');
+
+        if ($fname || $creator || $created_from || $created_to){
+
+            $fileUploads = new Transactions;
+            if(isset($fname)){
+                $fileUploads = $fileUploads->where('file_name', 'like', '%'.$fname.'%');
+            }
+            if(isset($creator)){
+                $fileUploads = $fileUploads->WhereHas('user', function($q) use($creator) {
+                    $q->where('name', 'like', '%'.$creator.'%');
+                });
+            }
+            if(isset($created_from) && isset($created_to)){
+                $fileUploads = $fileUploads->whereDate('created_at', '>=', $created_from)
+                                            ->whereDate('created_at', '<=', $created_to);
+            }
+
+            $fileUploads = $fileUploads->sortable()->paginate(10);
+            $dataSource = DataSources::orderBy('name','asc')->get();
+
+        }else{
+
+            $dataSource = DataSources::orderBy('name','asc')->get();
+            $fileUploads = Transactions::sortable()->orderBy('id','desc')->paginate(10);
+        }
 
         return view('file-uploads.index', compact('fileUploads','dataSource'));
+
     }
 
     public function getUserMail(Request $request)
@@ -86,7 +114,7 @@ class FileUploadsController extends Controller
         // get user name that is available on the db for direct sending
         // $directUserMail = User::select('name')->where('email', $uploadFile->direct_user_mail)->first();
 
-        // get id for current uploaded file from transaction table
+        // get id for current uploaded file from transaction table for direct download from mail purposes
         $fileId = Transactions::select('id')->where('file_name', $getFileName)->first();
         $fileDetails = [
             'user_name' => $uploadFile->user->name,

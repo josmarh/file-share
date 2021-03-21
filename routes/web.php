@@ -65,9 +65,6 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::put('/data-sources/update/{id}',[DataSourceController::class, 'update'])->name('data-sources.update');
     Route::delete('/data-sources/destroy/{id}',[DataSourceController::class, 'destroy'])->name('data-sources.destroy');
     Route::get('/data-sources/bulkdelete',[DataSourceController::class, 'bulkDelete'])->name('data-sources.delete');
-    Route::get('/data-sources/search',[DataSourceController::class, 'search'])->name('data-sources.search');
-
-    // Route::get('/data-sources/create', [DataSourceController::class, 'create'])->name('data-sources.create');
 
     Route::get('/mail-subscribers', [EmailSubscribersController::class, 'index'])->name('mail-subscribers');
     Route::post('/mail-subscribers/post',[EmailSubscribersController::class, 'store'])->name('mail-subscribers.store');
@@ -76,7 +73,6 @@ Route::middleware(['auth', 'role:superadministrator'])->group(function () {
     Route::delete('/mail-subscribers/destroy/{id}',[EmailSubscribersController::class, 'destroy'])->name('mail-subscribers.destroy');
     Route::put('/mail-subscribers/status/{id}',[EmailSubscribersController::class, 'status'])->name('mail-subscribers.status');
     Route::get('/mail-subscribers/bulkdelete',[EmailSubscribersController::class, 'bulkDelete'])->name('mail-subscribers.delete');
-    Route::get('/mail-subscribers/search',[EmailSubscribersController::class, 'search'])->name('mail-subscribers.search');
 
     Route::put('/user/role/{id}',[EmailSubscribersController::class, 'userRole'])->name('user.role');
     Route::get('/users',[EmailSubscribersController::class, 'users'])->name('users');

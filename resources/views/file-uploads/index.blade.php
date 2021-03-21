@@ -27,13 +27,56 @@
                 <button type="button" class="creator btn btn-lg " data-toggle="modal" data-target="#create" title="Upload New File">
                     + </button> 
                 <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button>
+                <button class="btn btn-outline-primary filter-btn" style="margin-left: 20px;" id="filter">
+                    Filters <span class="fa fa-filter"></span>
+                </button>
                 <br><br>
+                <!-- filters -->
+                <form method="GET" action="{{ route('file-uploads') }}" id="filter-section">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="file_name">File Name</label>
+                                <input type="text" value="{{ request()->query('file_name') }}" id="file_name" name="file_name" 
+                                        class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                                focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                                >
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="created_by">Created By</label>
+                                <input type="text" value="{{ request()->query('created_by') }}" id="created_by" name="created_by" 
+                                        class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                               focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" >
+                                <label for="created_from">Created Date</label>
+                                <input type="date" value="{{ request()->query('created_from') }}" id="created_from" name="created_from" 
+                                        class="date form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="created_to">To</label>
+                            <div class="form-group" >
+                                <input type="date" value="{{ request()->query('created_to') }}" id="created_to" name="created_to" 
+                                        class="date  block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm ">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn bg-primary" style="color:#ffffff;">Search</button> 
+                </form><br>
+
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
                             <tr>
                             @if (auth()->user()->hasRole('superadministrator'))
-                                <th><input type="checkbox"  id="checkall"></th>
+                                <th width="10"><input type="checkbox"  id="checkall"></th>
                             @endif
                                 <th scope="col">@sortablelink('file_name','File Name')</th>
                                 <th scope="col">@sortablelink('file_type','File Type')</th>
@@ -44,7 +87,7 @@
                             </tr>
                         </thead>
                         <tbody id="up-tb">
-                            @foreach($fileUploads as $fileUpload)
+                            @forelse($fileUploads as $fileUpload)
                             <tr data-id="{{$fileUpload->id}}" id="{{$fileUpload->id}}">
                             @if (auth()->user()->hasRole('superadministrator'))
                                 <td>
@@ -94,10 +137,17 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            {{ __('Searh Data Not Found!') }}
+                            @endforelse
                         </tbody>
                     </table>
-                    {{ $fileUploads->links() }}
+                    {{ $fileUploads
+                        ->appends(['file_name'=>request()->query('file_name'),
+                                    'created_by'=>request()->query('created_by'),
+                                    'created_from'=>request()->query('created_from'),
+                                    'created_to'=>request()->query('created_to'),])
+                        ->links() }}
                 </div>
             </div>
              <!-- The Modal -->
@@ -152,118 +202,5 @@
         </div>
     </div>
 
-<script>
-$(function(){
-
-    // bulk delete
-    $('#checkall').click(function(){
-
-        if ($(this).prop('checked') == true){
-            $('.bulk-check').prop('checked',true);
-            $('#del-btn').show();
-        }else{
-            $('.bulk-check').prop('checked',false);
-            $('#del-btn').hide();
-        }
-        });
-
-        $('#up-tb :checkbox').change(function(){
-
-        if($('#up-tb :checkbox:not(:checked)').length == 0){ 
-            // all are checked
-            $('#checkall').prop('checked', true);
-            $('#del-btn').show();
-        } else if($('#up-tb :checkbox:checked').length >  0){
-            // all are unchecked
-            $('#checkall').prop('checked', false);
-            $('#del-btn').show();
-        }else{
-            $('#del-btn').hide();
-        }
-        });
-
-        $('#del-btn').click(function(){
-        if(confirm("Are you sure you want to delete this?")){
-            var delId = [];
-
-            $('.bulk-check:checked').each(function(i){
-                delId.push($(this).val());
-                element = this;
-            });
-
-            if(delId.length>0){
-                $.ajax({
-                    url: '/file-uploads/bulkdelete',
-                    method: 'get',
-                    data: {id:delId},
-                    success:function(){
-                        for(var i=0; i<delId.length; i++)
-                        {
-                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
-                            $('tr#'+delId[i]+'').fadeOut('slow');
-                            $('#checkall').prop('checked', false);
-                            $('#del-btn').hide();
-                        }
-                    }
-                });
-            }
-        }
-        });
-
-    $('#direct-email').keyup(function(){
-        var getUser = $(this).val();
-
-        if (getUser != ''){
-            $.ajax({
-                url: "{{ url('/file-uploads/directemail') }}",
-                method: 'get',
-                data: {
-                    getUser: getUser,
-                },
-                success: function(result){
-                    $('#user-list').html(result);
-                }
-            });
-        }
-    });
-
-    $("#btn").submit(function(){
-
-        if( $('#file-up-field').val() && $.isNumeric( $('#ds-up-field').val() ) )
-        {
-            $(this).attr('disabled','disabled');
-            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Uploading...')
-
-            return true;
-        }else{
-            return false;
-        }
-    });
-
-    $('#ds-up-field').change(function(){
-
-        if($(this).val() == 16 ){
-            $('#user').show();
-        }else{
-            $('#user').hide();
-        }
-    });
-
-    $('.cp-btn').click(function(){
-        /* Get the text field */
-        var dataId = $(this).data('id');
-        var copyText = $('#cp-field'+dataId).val();   
-        var $temp = $("<input>");
-        $("body").append($temp);
-
-        // console.log(copyText);  
-        $temp.val(copyText).select();
-        document.execCommand("copy");
-        $temp.remove();
-
-        alert("Download link copied!");
-    });
-
-});
-</script>
+<script src="{{ asset('js/fileUpload.js') }}"></script>
 </x-app-layout>

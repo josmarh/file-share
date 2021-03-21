@@ -17,15 +17,20 @@
                 @endif
                 <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Data Source"> + </button>
                 <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button> 
-                <button class="btn btn-outline-primary" style="margin-left: 20px;" id="filter">Filters <span class="material-icons">filter_list</span></button> <br><br>
+                
+                <button class="btn btn-outline-primary filter-btn" style="margin-left: 20px;" id="filter">
+                    Filters <span class="fa fa-filter"></span>
+                </button>
+                <br><br>
 
-                <form method="GET" action="{{ route('data-sources.search') }}" id="filter-section">
+                <form method="GET" action="{{ route('data-sources') }}" id="filter-section" style="display:none">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="datasource">Data source</label>
-                                <input type="text" :value="old('dssearch')" name="dssearch" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
-                                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+                                <input type="text" id="search" value="{{ request()->query('search') }}" name="search" 
+                                        class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                               focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
                             </div>
                         </div>
                     </div>
@@ -36,14 +41,14 @@
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;">
                             <tr>
-                                <th><input type="checkbox"  id="checkall"></th>
+                                <th width="10"><input type="checkbox"  id="checkall"></th>
                                 <th scope="col">@sortablelink('name')</th>
                                 <th scope="col">Edit</th> 
                                 <th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody id="ds-tb">
-                            @foreach($dataSources as $dataSource)
+                            @forelse($dataSources as $dataSource)
                             <tr id="{{$dataSource->id}}">
                                 <td>
                                     <input type="checkbox" class="bulk-check" value="{{$dataSource->id}}">
@@ -58,10 +63,12 @@
                                     </form>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <p class="text-center"> No result found for query <strong>{{ request()->query('search') }}</strong></p>
+                            @endforelse
                         </tbody>
                     </table>
-                    {{ $dataSources->links() }}
+                    {{ $dataSources->appends(['search' => request()->query('search') ])->links() }}
                 </div>
             </div>
              <!-- The Modal -->
@@ -116,79 +123,11 @@
         </div>
     </div>
 
+<script src="{{ asset('js/dataSource.js') }}"></script>
 <script>
 $(function(){
-    $('#filter-section').hide();
-
-    $('#filter').click(function(){
-        $('#filter-section').toggle();
-    });
-
-    // bulk delete
-    $('#checkall').click(function(){
-
-        if ($(this).prop('checked') == true){
-            $('.bulk-check').prop('checked',true);
-            $('#del-btn').show();
-        }else{
-            $('.bulk-check').prop('checked',false);
-            $('#del-btn').hide();
-        }
-    });
-
-    $('#ds-tb :checkbox').change(function(){
-
-        if($('#ds-tb :checkbox:not(:checked)').length == 0){ 
-            // all are checked
-            $('#checkall').prop('checked', true);
-            $('#del-btn').show();
-        } else if($('#ds-tb :checkbox:checked').length >  0){
-            // all are unchecked
-            $('#checkall').prop('checked', false);
-            $('#del-btn').show();
-        }else{
-            $('#del-btn').hide();
-        }
-    });
-
-    $('#del-btn').click(function(){
-        if(confirm("Are you sure you want to delete this?")){
-            var delId = [];
-
-            $('.bulk-check:checked').each(function(i){
-                delId.push($(this).val());
-                element = this;
-            });
-
-            if(delId.length>0){
-                $.ajax({
-                    url: '/data-sources/bulkdelete',
-                    method: 'get',
-                    data: {id:delId},
-                    success:function(){
-                        for(var i=0; i<delId.length; i++)
-                        {
-                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
-                            $('tr#'+delId[i]+'').fadeOut('slow');
-                            $('#checkall').prop('checked', false);
-                            $('#del-btn').hide();
-                        }
-                    }
-                });
-            }
-        }
-    });
-
-    $("#btn").submit(function(){
-
-        if( $('#ds-field').val() )
-        {
-            $(this).attr('disabled','disabled');
-            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Saving...');
-        }
-    });
-
     $('.edit-ds').click(function(){
+        console.log('fine');
         var sourceId = $(this).data('id');
         $.ajax({
             url: "{{ url('/data-sources/edit') }}",
@@ -205,7 +144,6 @@ $(function(){
         });
 
     });
-
-});
+})
 </script>
 </x-app-layout>

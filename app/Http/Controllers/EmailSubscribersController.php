@@ -10,15 +10,7 @@ use App\Models\RoleUser;
 
 class EmailSubscribersController extends Controller
 {
-    public function search(Request $request)
-    {
-        $mailSubscribers = EmailSubscribers::sortable()
-                                        ->where('name','like', '%'.$request->name.'%')
-                                        ->orWhere('email','like', '%'.$request->email.'%')
-                                        ->paginate(10);
-
-        return view('email-subscription.index', compact('mailSubscribers'));
-    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +18,28 @@ class EmailSubscribersController extends Controller
      */
     public function index()
     {
-        $mailSubscribers = EmailSubscribers::sortable()->paginate(10);
+        $name = request()->query('name');
+        $email = request()->query('email');
+        $status = request()->query('status');
+
+        if ( $name || $email || $status ) 
+        {
+            $mailSubscribers = new EmailSubscribers;
+            if(isset($name)){
+                $mailSubscribers = $mailSubscribers->where('name','like', '%'.$name.'%');
+            }
+            if(isset($email)){
+                $mailSubscribers = $mailSubscribers->where('email','like', '%'.$email.'%');
+            }
+            if($status !='Choose Status'){
+                $mailSubscribers = $mailSubscribers->where('status', $status);
+            }
+
+            $mailSubscribers = $mailSubscribers->sortable()->paginate(10);
+        }else{
+            $mailSubscribers = EmailSubscribers::sortable()->paginate(10);
+        }
+        
         return view('email-subscription.index', compact('mailSubscribers'));
     }
 
@@ -109,9 +122,10 @@ class EmailSubscribersController extends Controller
 
     public function users()
     {
-        $user = User::sortable()->join('role_user', 'users.id','=','role_user.user_id')
-                    ->select('id','name','email','role_user.role_id')
-                    ->paginate(10);
+        $user = User::sortable()
+            ->join('role_user', 'users.id','=','role_user.user_id')
+            ->select('id','name','email','role_user.role_id')
+            ->paginate(10);
 
         return view('email-subscription.users', compact('user'));
     }

@@ -8,8 +8,8 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="alert alert-warning alert-dismissible fade show">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <span class="material-icons">warning_amber</span>
-            <strong>Note!</strong> Subscribers added to the list with status "Subscribed" would receive mails when a file is uploaded.
+            <span class="fa fa-exclamation-triangle"></span>
+            <strong>Note!</strong> Subscribers added to the list with status <b>"Subscribed"</b> would receive mails when a file is uploaded.
         </div>
     </div>
 
@@ -25,32 +25,35 @@
                 @endif
                 <button type="button" class="btn btn-lg creator" data-toggle="modal" data-target="#create" title="Add New Subscriber">+</button>
                 <button type="button" class="btn btn-lg btn-danger deletor" id="del-btn" style="display:none"> - </button>
-                <button class="btn btn-outline-primary" style="margin-left: 20px;" id="filter">Filters <span class="material-icons">filter_list</span></button> <br><br>
+                <button class="btn btn-outline-primary filter-btn" style="margin-left: 20px;" id="filter">
+                        Filters <span class="fa fa-filter"></span>
+                </button> 
+                <br><br>
 
-                <form method="GET" action="{{ route('mail-subscribers.search') }}" id="filter-section">
+                <form method="GET" action="{{ route('mail-subscribers') }}" id="filter-section">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="name">Name</label>
-                                <input type="text" :value="old('name')" name="name" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                <input type="text" value="{{ request()->query('name') }}" id="name" name="name" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                                     focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" :value="old('email')" name="email" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                <input type="email" value="{{ request()->query('email') }}" id="email" name="email" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                                     focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select :value="old('status')" name="status" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
+                                <select name="status" id="status" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                                     focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
-                                    <option value="0">Choose Status</option>
-                                    <option value="1">Subscribed</option>
-                                    <option value="2">Unsubscribed</option>
+                                    <option selected>Choose Status</option>
+                                    <option value="1" {{ request()->query('status') ==  1 ? 'selected' : ''}} >Subscribed</option>
+                                    <option value="2" {{ request()->query('status') ==  2 ? 'selected' : ''}}>Unsubscribed</option>
                                 </select>
                             </div>
                         </div>
@@ -62,7 +65,7 @@
                     <table class="table table-hover table-bordered ">
                         <thead class="bg-primary" style="color:#ffffff;"> 
                             <tr>
-                                <th><input type="checkbox"  id="checkall"></th>
+                                <th width="10"><input type="checkbox"  id="checkall"></th>
                                 <th scope="col">@sortablelink('name')</th>
                                 <th scope="col">@sortablelink('email')</th>
                                 <th scope="col">Status</th>
@@ -70,7 +73,7 @@
                             </tr>
                         </thead>
                         <tbody id="ms-tb">
-                            @foreach($mailSubscribers as $mailSubscriber)
+                            @forelse($mailSubscribers as $mailSubscriber)
                             <tr id="{{$mailSubscriber->id}}" data-id="{{$mailSubscriber->id}}">
                                 <td>
                                     <input type="checkbox" class="bulk-check" value="{{$mailSubscriber->id}}">
@@ -117,10 +120,17 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <p class="text-center"> No result found for query </p>
+                            @endforelse
                         </tbody>
                     </table>
-                    {{ $mailSubscribers->links() }}
+                    {{ $mailSubscribers
+                        ->appends(['name'=> request()->query('name'),
+                                    'email'=>request()->query('email'), 
+                                    'status'=>request()->query('status')])
+                        ->links() 
+                    }}
                 </div>
             </div>
              <!-- The Modal -->
@@ -181,69 +191,10 @@
         </div>
     </div>
 
+<script src="{{ asset('js/emailSubscription.js') }}"></script>
 <script>
 $(function(){
-    $('#filter-section').hide();
-
-    $('#filter').click(function(){
-        $('#filter-section').toggle();
-    });
-
-    // bulk delete
-    $('#checkall').click(function(){
-
-        if ($(this).prop('checked') == true){
-            $('.bulk-check').prop('checked',true);
-            $('#del-btn').show();
-        }else{
-            $('.bulk-check').prop('checked',false);
-            $('#del-btn').hide();
-        }
-    });
-
-    $('#ms-tb :checkbox').change(function(){
-
-        if($('#ms-tb :checkbox:not(:checked)').length == 0){ 
-            // all are checked
-            $('#checkall').prop('checked', true);
-            $('#del-btn').show();
-        } else if($('#ms-tb :checkbox:checked').length >  0){
-            // all are unchecked
-            $('#checkall').prop('checked', false);
-            $('#del-btn').show();
-        }else{
-            $('#del-btn').hide();
-        }
-    });
-
-    $('#del-btn').click(function(){
-        if(confirm("Are you sure you want to delete this?")){
-            var delId = [];
-
-            $('.bulk-check:checked').each(function(i){
-                delId.push($(this).val());
-                element = this;
-            });
-
-            if(delId.length>0){
-                $.ajax({
-                    url: '/mail-subscribers/bulkdelete',
-                    method: 'get',
-                    data: {id:delId},
-                    success:function(){
-                        for(var i=0; i<delId.length; i++)
-                        {
-                            $('tr#'+delId[i]+'').css('background-color', '#ccc');
-                            $('tr#'+delId[i]+'').fadeOut('slow');
-                            $('#checkall').prop('checked', false);
-                            $('#del-btn').hide();
-                        }
-                    }
-                });
-            }
-        }
-    });
-
+    // get data to modify modal
     $('.edit-ms').click(function(){
         // console.log('working');
         var msId = $(this).data('id');
@@ -261,41 +212,6 @@ $(function(){
             }
         });
     });
-
-    // button changes
-    var arr=[];
-
-    $('#ms-tb tr').each( function (i, tr) {
-        arr.push($(tr).data('id'));
-    });
-    // console.log(arr);
-    for (var i=0; i<arr.length; i++){
-
-        if ( $('#status'+arr[i]).text() == 'Subscribed' )
-        {
-            $('#ms-btn'+arr[i]).html('<span class="material-icons" >clear</span> <br> Unsubscribe');
-            // $('#ms-btn'+arr[i]).removeClass( "btn-outline-success" ).addClass( "btn-outline-warning" );
-            $('#main-status'+arr[i]).val('2');
-            
-
-        }else{
-            $('#main-status'+arr[i]).val('1');
-        }
-    }
-
-    $("#btn").submit(function(){
-
-        if( $('#ms-name').val() && $('#ms-email').val() )
-        {
-            $(this).attr('disabled','disabled');
-            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Saving...')
-
-            return true;
-        }else{
-            return false;
-        }
-    });
-
-});
+})
 </script>
 </x-app-layout>
