@@ -11,9 +11,8 @@ use App\Models\DataSources;
 use App\Models\EmailSubscribers;
 use App\Models\User;
 
-use Mail;
-use App\Mail\UserUploadNotification;
-use App\Mail\TeamUploadNotification;
+use App\Jobs\TeamMailJob;
+use App\Jobs\UserMailJob;
 
 class FileUploadsController extends Controller
 {
@@ -111,34 +110,39 @@ class FileUploadsController extends Controller
         $uploadFile->direct_user_mail = $request->get('direct-email');
         $uploadFile->save();
 
-        // get user name that is available on the db for direct sending
-        // $directUserMail = User::select('name')->where('email', $uploadFile->direct_user_mail)->first();
-
         // get id for current uploaded file from transaction table for direct download from mail purposes
         $fileId = Transactions::select('id')->where('file_name', $getFileName)->first();
         $fileDetails = [
-            'user_name' => $uploadFile->user->name,
-            'file_name' => $fileName,
-            'subscriber_name' => '',
-            'file_id'=> $fileId->id,
+            'user_name'         => $uploadFile->user->name,
+            'file_name'         => $fileName,
+            'subscriber_name'   => '',
+            'file_id'           => $fileId->id,
+            'subscriber_email'  => $uploadFile->direct_user_mail,
+            'user_email'        => $uploadFile->user->email,
         ];
-        // sending... to user who uploaded the file
-        // Mail::to($uploadFile->user->email)->send(new UserUploadNotification($fileDetails));
+        $delay = 5;
+        // mail sending... to user who uploaded the file
+        dispatch(new UserMailJob($fileDetails))->delay($delay);
 
-        // if direct user mail does not exist send mail to subscribers else send mail to direct usermail
+        // subscribers vs direct mail
         if( is_null($uploadFile->direct_user_mail)){
             $subscribers = EmailSubscribers::where('status', 1)->get();
-        
+            
             foreach($subscribers as $subscriber ){
                 $fileDetails = [
-                    'file_name' => $fileName,
-                    'subscriber_name' => $subscriber->name,
-                    'file_id' => $fileId->id,
+                    'file_name'         => $fileName,
+                    'subscriber_name'   => $subscriber->name,
+                    'file_id'           => $fileId->id,
+                    'subscriber_email'  => $subscriber->email,
                 ];
-                Mail::to($subscriber->email)->send(new TeamUploadNotification($fileDetails));
+                // mail sending... subscribers mail
+                dispatch(new TeamMailJob($fileDetails))->delay($delay);
+
+                $delay = $delay + 5;
             }
         }else{
-            Mail::to($uploadFile->direct_user_mail)->send(new TeamUploadNotification($fileDetails));
+            // mail sending... direct mail
+            dispatch(new TeamMailJob($fileDetails))->delay($delay);
         }
         
         return redirect()->route('file-uploads')->withStatus('File uploaded successfully!');

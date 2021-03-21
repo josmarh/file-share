@@ -96,8 +96,9 @@
                             <div class="container">
                             <div class="card-deck" style="margin-top: 15px;">
 
-                                @foreach ($fileUploads as $transaction)
-                                <div class="card">
+                                
+                                @forelse ($fileUploads as $transaction)
+                                <div class=" dashboard-card" >
                                     <div class="card-body shadow-xl sm:rounded-lg">
                                         <div class="row">
                                             <div align="center">
@@ -136,7 +137,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                @endforeach
+                                @empty 
+                                <center><h3>{{ __('No Data Available!') }}</h3></center> 
+                                @endforelse
                             </div>
                             </div>
                         </div>

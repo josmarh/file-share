@@ -121,3 +121,8 @@
 .filter-btn {
    border-radius: 8px;
 }
+
+.dashboard-card {
+   width: 225px;
+   min-height: 200px;
+}

@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $user=User::all();
         $datasources=DataSources::all();
 
-        $fileUploads = Transactions::orderBy('id','desc')->paginate(6);
+        $fileUploads = Transactions::orderBy('id','desc')->paginate(10);
 
         return view('dashboard',compact('transactions','user','datasources','fileUploads'));
     }
