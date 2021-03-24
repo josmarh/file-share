@@ -15,16 +15,16 @@ use App\Mail\UserUploadNotification;
 class UserMailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $fileDetails;
+    protected $fileDetailUser;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($fileDetails)
+    public function __construct($fileDetailUser)
     {
-        $this->fileDetails = $fileDetails;
+        $this->fileDetailUser = $fileDetailUser;
     }
 
     /**
@@ -34,6 +34,6 @@ class UserMailJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->fileDetails['user_email'])->send( new UserUploadNotification($this->fileDetails));
+        Mail::to($this->fileDetailUser['user_email'])->send( new UserUploadNotification($this->fileDetailUser));
     }
 }

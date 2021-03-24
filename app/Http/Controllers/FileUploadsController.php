@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Log;
+use DB;
 
 use App\Models\Transactions;
 use App\Models\DataSources;
@@ -29,12 +30,17 @@ class FileUploadsController extends Controller
         $created_to = request()->query('created_to');
 
         if ($fname || $creator || $created_from || $created_to){
-
+            // filter section
             $fileUploads = new Transactions;
-            if(isset($fname)){
+
+            if(isset($fname) && auth()->user()->hasRole('superadministrator')){
                 $fileUploads = $fileUploads->where('file_name', 'like', '%'.$fname.'%');
+            }elseif(auth()->user()->hasRole('user')){
+                $fileUploads = $fileUploads->where('user_id', auth()->user()->id)
+                                        ->where('file_name', 'like', '%'.$fname.'%');
             }
-            if(isset($creator)){
+
+            if(isset($creator) ){
                 $fileUploads = $fileUploads->WhereHas('user', function($q) use($creator) {
                     $q->where('name', 'like', '%'.$creator.'%');
                 });
@@ -45,13 +51,32 @@ class FileUploadsController extends Controller
             }
 
             $fileUploads = $fileUploads->sortable()->paginate(10);
-            $dataSource = DataSources::orderBy('name','asc')->get();
-
+            
         }else{
+            // no filter
+            if(auth()->user()->hasRole('superadministrator')){
+                
+                $fileUploads = Transactions::sortable()
+                                            ->orderBy('id','desc')
+                                            ->paginate(10);
 
-            $dataSource = DataSources::orderBy('name','asc')->get();
-            $fileUploads = Transactions::sortable()->orderBy('id','desc')->paginate(10);
+            }elseif( auth()->user()->hasRole('user') ){
+                
+                // for file uploaded by user and shared with user
+                $fileUploads = Transactions::sortable()
+                ->join('users', 'fs_transactions.user_id', '=', 'users.id')
+                ->where('fs_transactions.user_id', auth()->user()->id)
+                ->orWhereIn('fs_transactions.direct_user_mail', function($query){
+                                        $query->select('email')
+                                            ->from('users')
+                                            ->where('id', auth()->user()->id);
+                                    })
+                ->orderBy('fs_transactions.id','desc')
+                ->paginate(10);
+                
+            }
         }
+        $dataSource = DataSources::orderBy('name','asc')->get();
 
         return view('file-uploads.index', compact('fileUploads','dataSource'));
 
@@ -60,9 +85,11 @@ class FileUploadsController extends Controller
     public function getUserMail(Request $request)
     {
         $userMail = $request->getUser;
-        $userList = User::select('id','email')
-                        ->where('email','like', '%'.$userMail.'%')
-                        ->get();
+        if(isset($userMail)){
+            $userList = User::select('id','email')
+            ->where('email','like', '%'.$userMail.'%')
+            ->get();
+        }
 
         return view('file-uploads.user-list', compact('userList'));
     }
@@ -112,20 +139,17 @@ class FileUploadsController extends Controller
 
         // get id for current uploaded file from transaction table for direct download from mail purposes
         $fileId = Transactions::select('id')->where('file_name', $getFileName)->first();
-        $fileDetails = [
+        $fileDetailUser = [
             'user_name'         => $uploadFile->user->name,
             'file_name'         => $fileName,
-            'subscriber_name'   => '',
-            'file_id'           => $fileId->id,
-            'subscriber_email'  => $uploadFile->direct_user_mail,
             'user_email'        => $uploadFile->user->email,
         ];
-        $delay = 5;
+        $delay = 10;
         // mail sending... to user who uploaded the file
-        dispatch(new UserMailJob($fileDetails))->delay($delay);
+        dispatch(new UserMailJob($fileDetailUser))->delay($delay);
 
         // subscribers vs direct mail
-        if( is_null($uploadFile->direct_user_mail)){
+        if( $uploadFile->data_source_id == 1 ){
             $subscribers = EmailSubscribers::where('status', 1)->get();
             
             foreach($subscribers as $subscriber ){
@@ -142,7 +166,21 @@ class FileUploadsController extends Controller
             }
         }else{
             // mail sending... direct mail
-            dispatch(new TeamMailJob($fileDetails))->delay($delay);
+            $directEmail = $uploadFile->direct_user_mail;
+
+            foreach(explode(',',$directEmail) as $directEmails){
+                
+                $fileDetails = [
+                    'file_name'         => $fileName,
+                    'subscriber_name'   => '',
+                    'file_id'           => $fileId->id,
+                    'subscriber_email'  => $directEmails
+                ];
+
+                dispatch(new TeamMailJob($fileDetails))->delay($delay);
+
+                $delay = $delay + 5;
+            }
         }
         
         return redirect()->route('file-uploads')->withStatus('File uploaded successfully!');

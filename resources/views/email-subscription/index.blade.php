@@ -29,7 +29,7 @@
                         Filters <span class="fa fa-filter"></span>
                 </button> 
                 <br><br>
-
+                <!-- filter -->
                 <form method="GET" action="{{ route('mail-subscribers') }}" id="filter-section">
                     <div class="row">
                         <div class="col-md-4">
@@ -51,7 +51,7 @@
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
                                                     focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
-                                    <option selected>Choose Status</option>
+                                    <option selected>All</option>
                                     <option value="1" {{ request()->query('status') ==  1 ? 'selected' : ''}} >Subscribed</option>
                                     <option value="2" {{ request()->query('status') ==  2 ? 'selected' : ''}}>Unsubscribed</option>
                                 </select>
@@ -121,7 +121,7 @@
                                 </td>
                             </tr>
                             @empty
-                            <p class="text-center"> No result found for query </p>
+                            <p class="text-center"> No Data Available! </p>
                             @endforelse
                         </tbody>
                     </table>

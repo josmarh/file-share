@@ -6,16 +6,16 @@
     @endforeach
 </ul>
 @else
-{{ 'No Data Found!' }}
+{{ 'User Mail Not Found!' }}
 @endif
 
 <script>
-    $(function(){
-        $('.list-group-item').click(function(){
-            var email = $(this).data('id');
-            $('#direct-email').val(email);
-            //console.log(email);
-            $(this).hide();
-        });
+$(function(){
+    $('.list-group-item').click(function(){
+        var email = $(this).data('id');
+        $('#direct-email').val(email);
+        //console.log(email);
+        $(this).hide();
     });
+});
 </script>

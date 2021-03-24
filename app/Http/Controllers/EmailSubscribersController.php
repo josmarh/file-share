@@ -8,6 +8,7 @@ use App\Models\EmailSubscribers;
 use App\Models\User;
 use App\Models\RoleUser;
 
+
 class EmailSubscribersController extends Controller
 {
     
@@ -31,7 +32,7 @@ class EmailSubscribersController extends Controller
             if(isset($email)){
                 $mailSubscribers = $mailSubscribers->where('email','like', '%'.$email.'%');
             }
-            if($status !='Choose Status'){
+            if($status !='All'){
                 $mailSubscribers = $mailSubscribers->where('status', $status);
             }
 
@@ -120,27 +121,6 @@ class EmailSubscribersController extends Controller
         return redirect()->route('mail-subscribers');
     }
 
-    public function users()
-    {
-        $user = User::sortable()
-            ->join('role_user', 'users.id','=','role_user.user_id')
-            ->select('id','name','email','role_user.role_id')
-            ->paginate(10);
-
-        return view('email-subscription.users', compact('user'));
-    }
-
-    public function userRole(Request $request, $id)
-    {
-        // $userId = User::findOrFail($id);
-        $roleId = $request->input('role');
-
-        RoleUser::where('user_id', $id)
-                ->update([ 'role_id' => $roleId ]);
-
-        return redirect()->route('users')->withStatus('User Role Changed');
-    }
-
     public function bulkDelete(Request $request)
     {
         $id=$request->id;
@@ -150,4 +130,8 @@ class EmailSubscribersController extends Controller
 
         return redirect()->route('mail-subscribers')->withStatus('Subscriber deleted!');
     }
+
+    
+
+    
 }

@@ -1,3 +1,4 @@
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,11 +24,6 @@
                 </div>
                 @if (auth()->user()->hasRole('superadministrator'))
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
-                        {{ __('Data Sources') }}
-                    </x-jet-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ route('mail-subscribers') }}" :active="request()->routeIs('mail-subscribers')">
                         {{ __('Mail Subscription') }}
                     </x-jet-nav-link>
@@ -39,6 +35,7 @@
                 </div>
                 @endif
             </div>
+            
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <!-- Teams Dropdown -->
@@ -167,9 +164,6 @@
                 {{ __('File Upload') }}
             </x-jet-responsive-nav-link>
             @if (auth()->user()->hasRole('superadministrator'))
-            <x-jet-responsive-nav-link href="{{ route('data-sources') }}" :active="request()->routeIs('data-sources')">
-                {{ __('Data Sources') }}
-            </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="{{ route('mail-subscribers') }}" :active="request()->routeIs('mail-subscribers')">
                 {{ __('Mail Subscription') }}
             </x-jet-responsive-nav-link>
@@ -250,4 +244,5 @@
             </div>
         </div>
     </div>
+    
 </nav>

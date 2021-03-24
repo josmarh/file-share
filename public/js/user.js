@@ -1,6 +1,8 @@
 $(function(){
-    // filter
-    if ( $('#name').val() || $('#email').val() || $('#status').val() !='All') {
+    
+
+    //filters
+    if ( $('#name').val() || $('#email').val() || $('#role').val() !='All' || $('#status').val() !='All') {
         $('#filter-section').show();
     }else{
         $('#filter-section').hide();
@@ -38,7 +40,7 @@ $(function(){
     });
 
     $('#del-btn').click(function(){
-        if(confirm("Are you sure you want to delete this?")){
+        if(confirm("Please ensure files uploaded by the user(s) have been deleted before you proceed?")){
             var delId = [];
 
             $('.bulk-check:checked').each(function(i){
@@ -48,7 +50,7 @@ $(function(){
 
             if(delId.length>0){
                 $.ajax({
-                    url: '/mail-subscribers/bulkdelete',
+                    url: '/user/bulkdelete',
                     method: 'get',
                     data: {id:delId},
                     success:function(){
@@ -66,7 +68,8 @@ $(function(){
         }
     });
 
-     // button changes
+
+    // button changes
     var arr=[];
 
     $('#ms-tb tr').each( function (i, tr) {
@@ -75,30 +78,27 @@ $(function(){
     // console.log(arr);
     for (var i=0; i<arr.length; i++){
 
-        if ( $('#status'+arr[i]).text() == 'Subscribed' )
+        // switch button based on user role
+        if ( $('#status'+arr[i]).text() == 'Admin' )
         {
-            $('#ms-btn'+arr[i]).html('<span class="material-icons" >clear</span> <br> Unsubscribe');
+            $('#ms-btn'+arr[i]).html('<span class="material-icons" >person</span> <br> Make Basic User');
             // $('#ms-btn'+arr[i]).removeClass( "btn-outline-success" ).addClass( "btn-outline-warning" );
-            $('#main-status'+arr[i]).val('2');
-            
-
+            $('#main-status'+arr[i]).val('user');
+            $('#main2-status'+arr[i]).val('superadministrator');
         }else{
-            $('#main-status'+arr[i]).val('1');
+            $('#main-status'+arr[i]).val('superadministrator');
+            $('#main2-status'+arr[i]).val('user');
+        }
+
+        // switch button based on active status
+        if ( $('#active-status'+arr[i]).text() == 'Active' )
+        {
+            $('#ss-btn'+arr[i]).html('<span class="material-icons" id="active_status{{ $user->id }}" >clear</span> <br> Inactive');
+            $('#active_status'+arr[i]).val('2');
+        }else{
+            $('#active_status'+arr[i]).val('1');
         }
     }
 
-    // on form submit
-    $("#btn").submit(function(){
-
-        if( $('#ms-name').val() && $('#ms-email').val() )
-        {
-            $(this).attr('disabled','disabled');
-            $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Saving...')
-
-            return true;
-        }else{
-            return false;
-        }
-    });
 
 });

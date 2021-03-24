@@ -138,7 +138,7 @@
                                 </td>
                             </tr>
                             @empty
-                            {{ __('Searh Data Not Found!') }}
+                            {{ __('Data Not Available!') }}
                             @endforelse
                         </tbody>
                     </table>
@@ -151,7 +151,7 @@
                 </div>
             </div>
              <!-- The Modal -->
-             <div class="modal fade" id="create">
+            <div class="modal fade" id="create">
                 <div class="modal-dialog modal-md modal-dialog-centered">
                     <div class="modal-content">
                         <!-- Modal Header -->
@@ -164,13 +164,12 @@
                             <form method="POST" action="{{ route('file-uploads.store') }}" id="upload-form" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="datasource" class="labels">Data Source</label>
+                                    <label for="datasource" class="labels">Upload Type</label>
                                     <select class="custom-select block mt-1 w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 
                                         focus:ring-opacity-50 rounded-md shadow-sm" name="datasource" id="ds-up-field" required >
-                                        <option selected>Choose Data Source</option>
-                                        @foreach ($dataSource as $dataSources)
-                                        <option value="{{ $dataSources->id }}">{{ $dataSources->name }}</option>
-                                        @endforeach
+                                        <option selected>Choose Upload Type</option>
+                                        <option value="1">{{ __('General') }}</option>
+                                        <option value="2">{{ __('Direct') }}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -179,9 +178,12 @@
                                             focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="filename" required />
                                 </div>
                                 <div class="form-group" style="display:none" id="user">
-                                    <label for="email">User to Notify</label>
+                                    <label for="email" >User(s) Email</label>
                                     <input type="email" id="direct-email" class="form-control block mt-1 w-full border-gray-300 focus:border-indigo-300 
-                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="direct-email" />
+                                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" data-html="true" 
+                                            data-toggle="popover" data-trigger="focus" title="<i class='fa fa-info-circle'></i> Tips" data-placement="top" 
+                                            data-content="To add multiple emails, separate each email with a comma, like: name@example.com, name2@example.com." 
+                                            name="direct-email" multiple />
                                     <div id="user-list"></div>
                                 </div>
                                 <div class="form-group">

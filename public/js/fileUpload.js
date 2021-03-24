@@ -1,5 +1,5 @@
 $(function(){
-
+   
     // filter
     if ( $('#file_name').val() || $('#created_by').val() != '' 
         || $('#created_from').val() !='' || $('#created_to').val() !='' ) {
@@ -12,6 +12,8 @@ $(function(){
     $('#filter').click(function(){
         $('#filter-section').toggle();
     });
+
+    $('[data-toggle="popover"]').popover();
 
     $('.date').datepicker({  
         format: 'yyyy-mm-dd',
@@ -71,6 +73,7 @@ $(function(){
                             $('#checkall').prop('checked', false);
                             $('#del-btn').hide();
                         }
+                        location.reload();
                     }
                 });
             }
@@ -83,7 +86,7 @@ $(function(){
 
         if (getUser != ''){
             $.ajax({
-                url: "{{ url('/file-uploads/directemail') }}",
+                url: '/file-uploads/directemail',
                 method: 'get',
                 data: {
                     getUser: getUser,
@@ -100,6 +103,9 @@ $(function(){
 
         if( $('#file-up-field').val() && $.isNumeric( $('#ds-up-field').val() ) )
         {
+            if ($("direct-email").val()){
+                $("direct-email").multiple = true;
+            }
             $(this).attr('disabled','disabled');
             $(this).html('<span class="spinner-grow spinner-grow-sm"></span> Uploading...')
 
@@ -112,7 +118,7 @@ $(function(){
     // if datasource is not available i.e other show user filed
     $('#ds-up-field').change(function(){
 
-        if($(this).val() == 16 ){
+        if($(this).val() == 2 ){
             $('#user').show();
         }else{
             $('#user').hide();
