@@ -21,6 +21,7 @@ class CreateFsTransactionsTable extends Migration
             $table->decimal('file_size',  $precision = 17, $scale = 2);
             $table->string('file_type');
             $table->unsignedBigInteger('user_id');
+            $table->string('direct_user_mail')->nullable();
             $table->timestamps();
             $table->dateTime('deleted_at')->nullable();
         });

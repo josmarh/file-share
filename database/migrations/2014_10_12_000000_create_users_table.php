@@ -22,7 +22,9 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->text('profile_photo_path')->nullable();
+            $table->smallInteger('active_status', 1)->nullable();
             $table->timestamps();
+            $table->dateTme('deleted_at')->nullable();
         });
     }
 
