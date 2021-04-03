@@ -69,6 +69,19 @@ class LaratrustSeeder extends Seeder
                     'password' => bcrypt('password')
                 ]);
                 $user->attachRole($role);
+
+                //customly added
+                $adminUser = \App\Models\User::create([
+
+                    'name' => 'John Doe',
+        
+                    'email' => 'jdoe@fileshare.com',
+        
+                    'password' => bcrypt('jdoe1234'),
+        
+                ]);
+
+                $adminUser->attachRole('superadministrator');
             }
 
         }

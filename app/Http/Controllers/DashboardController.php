@@ -25,11 +25,12 @@ class DashboardController extends Controller
         }
     }
 
+    // admin dashboard
     public function index()
     {
         $transactions = Transactions::all();
         $user=User::all();
-        $datasources=DataSources::all();
+        $datasources= Transactions::whereNotNull('direct_user_mail')->get();
 
         $fileUploads = Transactions::orderBy('id','desc')->paginate(10);
 
@@ -40,7 +41,9 @@ class DashboardController extends Controller
     {
         $transactions = Transactions::where('user_id', auth()->user()->id)->get();
         $user=User::all();
-        $datasources=DataSources::all();
+        $datasources=Transactions::whereNotNull('direct_user_mail')
+                                    ->where('user_id', auth()->user()->id)
+                                    ->get();
                 
         // for file uploaded by user and shared with user
         $fileUploads = Transactions::sortable()

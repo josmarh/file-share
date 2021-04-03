@@ -48,9 +48,9 @@
                 <div class="card bg-warning">
                     <div class="card-body text-center">
                         <div class="row">
-                            <div class="col-xs-4"><span class="material-icons box-icon">storage</span></div>
+                            <div class="col-xs-4"><span class="material-icons box-icon">sync_alt</span></div>
                             <div class="col-xs-8">
-                                <p class="card-text inner-text">Data Source </p>
+                                <p class="card-text inner-text">Direct Share </p>
                                 <p class="count-text"> {{ $datasources->count() }} </p>
                             </div>            
                         </div>        
@@ -114,7 +114,7 @@
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <div align="center" >
-                                                                <a href="{{ route('file-uploads.download', $transaction->id) }}" class="dropdown-item" style="font-size:10px" >
+                                                                <a href="{{ route('file-uploads.download', Crypt::encryptString($transaction->id)) }}" class="dropdown-item" style="font-size:10px" >
                                                                 <span class="material-icons">file_download</span> <br> Download </a>
                                                             </div>
                                                         </div>
@@ -174,7 +174,7 @@
                                                     <div class="row">    
                                                     <div class="col-md-12" >
                                                         <input type="text" style="display:none" id="cp-field{{$fileUpload->id}}" 
-                                                                    value="{{ route('file-uploads.download', $fileUpload->id) }}">
+                                                                    value="{{ route('file-uploads.download', Crypt::encryptString($fileUpload->id)) }}">
                                                         <div align="center" >
                                                             <button class="btn btn-xs sdropdown-item cp-btn action-btn" data-id="{{$fileUpload->id}}" style="font-size:10px" >
                                                             <span class="material-icons">insert_link</span> <br> Copy Link</button>
@@ -185,7 +185,7 @@
                                                     <div class="col-md-12">
 
                                                         <div align="center" >
-                                                            <a href="{{ route('file-uploads.download', $fileUpload->id) }}" class="dropdown-item" style="font-size:10px" >
+                                                            <a href="{{ route('file-uploads.download', Crypt::encryptString($fileUpload->id)) }}" class="dropdown-item" style="font-size:10px" >
                                                             <span class="material-icons">file_download</span> <br> Download </a>
                                                         </div>
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 use Log;
 use DB;
 
@@ -194,6 +196,7 @@ class FileUploadsController extends Controller
      */
     public function download($id)
     {   
+        $id = Crypt::decryptString($id);
         $fileUploads = Transactions::findOrFail($id);
         $headers = array(
             'Content-Type: application/pdf',
