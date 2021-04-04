@@ -45,7 +45,10 @@ This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
 - Run DB Seeder
     > `php artisan db:seed`
 
-- Demo User
+- Run app
+    > `php artisan serve`
+
+- Login with demo User
     > `email: jdoe@fileshare.com`
 
     > `password: jdoe1234`
