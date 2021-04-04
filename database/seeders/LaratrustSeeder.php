@@ -75,13 +75,19 @@ class LaratrustSeeder extends Seeder
 
                     'name' => 'John Doe',
         
-                    'email' => 'jdoe@fileshare.com',
+                    'email' => 'jdoe@fileshareapp.com',
         
                     'password' => bcrypt('jdoe1234'),
         
                 ]);
 
                 $adminUser->attachRole('superadministrator');
+
+                \App\Models\User::update([
+
+                    'email_verified_at' => timestamps(),
+        
+                ])->where('email', 'jdoe@fileshareapp.com');
             }
 
         }

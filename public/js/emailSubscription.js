@@ -28,13 +28,16 @@ $(function(){
             // all are checked
             $('#checkall').prop('checked', true);
             $('#del-btn').show();
-        } else if($('#ms-tb :checkbox:checked').length >  0){
+        }else if($('#ms-tb :checkbox:checked').length > 0){
             // all are unchecked
             $('#checkall').prop('checked', false);
             $('#del-btn').show();
-        }else{
+        }else if($('#ms-tb :checkbox:checked').length == 0){
+            $('#checkall').prop('checked', false);
             $('#del-btn').hide();
         }
+
+
     });
 
     $('#del-btn').click(function(){

@@ -42,11 +42,12 @@ $(function(){
             // all are checked
             $('#checkall').prop('checked', true);
             $('#del-btn').show();
-        } else if($('#up-tb :checkbox:checked').length >  0){
+        }else if($('#up-tb :checkbox:checked').length > 0){
             // all are unchecked
             $('#checkall').prop('checked', false);
             $('#del-btn').show();
-        }else{
+        }else if($('#up-tb :checkbox:checked').length == 0){
+            $('#checkall').prop('checked', false);
             $('#del-btn').hide();
         }
     });
