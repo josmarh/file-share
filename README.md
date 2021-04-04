@@ -1,10 +1,10 @@
-<p align="center">FILESHARE</p>
+## FILESHARE
 
-## About Fileshare
+# About Fileshare
 
 Fileshare is a web application developed for internal team use to share files.
 
-## Features
+# Features
 
 - File Uploads
 - File Downloads
@@ -15,11 +15,11 @@ Fileshare is a web application developed for internal team use to share files.
 - Search filters
 - Bulk Delete
 
-## Build
+# Build
 
 This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
 
-## Installation
+# Installation
 
 - Clone Repository
     > `git clone https://github.com/Eric-Josh/file-share-v2`
