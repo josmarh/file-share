@@ -1,4 +1,4 @@
-## FILESHARE
+## FILESHARE APP
 
 # About Fileshare
 
@@ -24,23 +24,35 @@ This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
 - Clone Repository
     > `git clone https://github.com/Eric-Josh/file-share-v2`
 
+- Install all dependencies
+    > `composer install or composer update`
+
+    > `npm install`
+
 - Create DB
 
 - Copy .env.example to .env
+    > `cp .env.example .env`
+
+- Generate APP_KEY
+    > `php artisan key:generate`
 
 - Configure your DB and mail server
 
 - Run Migration
-    > `php artisan run migration`
+    > `php artisan migrate`
 
 - Run DB Seeder
     > `php artisan db:seed`
 
 - Demo User
     > `email: jdoe@fileshare.com`
+
     > `password: jdoe1234`
 
 - Run the queue cmd for mail notification 
     > `php artisan queue:work`
+
+    - Ensure you change QUEUE_CONNECTION to database in .env 
 
     For more details on queues visit [Laravel Queues](https://laravel.com/docs/8.x/queues).

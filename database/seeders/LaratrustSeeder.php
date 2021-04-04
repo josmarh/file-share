@@ -69,25 +69,6 @@ class LaratrustSeeder extends Seeder
                     'password' => bcrypt('password')
                 ]);
                 $user->attachRole($role);
-
-                //customly added
-                $adminUser = \App\Models\User::create([
-
-                    'name' => 'John Doe',
-        
-                    'email' => 'jdoe@fileshareapp.com',
-        
-                    'password' => bcrypt('jdoe1234'),
-        
-                ]);
-
-                $adminUser->attachRole('superadministrator');
-
-                \App\Models\User::update([
-
-                    'email_verified_at' => timestamps(),
-        
-                ])->where('email', 'jdoe@fileshareapp.com');
             }
 
         }
@@ -116,6 +97,25 @@ class LaratrustSeeder extends Seeder
                 DB::table($usersTable)->truncate();
             }
         }
+
+        //customly added
+        $adminUser = \App\Models\User::create([
+
+            'name' => 'John Doe',
+
+            'email' => 'jdoe@fileshareapp.com',
+
+            'password' => bcrypt('jdoe1234'),
+
+        ]);
+
+        $adminUser->attachRole('superadministrator');
+
+        \App\Models\User::update([
+
+            'email_verified_at' => timestamps(),
+
+        ])->where('email', 'jdoe@fileshareapp.com');
 
         Schema::enableForeignKeyConstraints();
     }
