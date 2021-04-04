@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use App\Models\User;
 
 class LaratrustSeeder extends Seeder
 {
@@ -98,25 +99,20 @@ class LaratrustSeeder extends Seeder
             }
         }
 
+        Schema::enableForeignKeyConstraints();
+
         //customly added
-        $adminUser = \App\Models\User::create([
-
+        $adminUser = User::create([
             'name' => 'John Doe',
-
             'email' => 'jdoe@fileshareapp.com',
-
             'password' => bcrypt('jdoe1234'),
-
         ]);
 
         $adminUser->attachRole('superadministrator');
 
-        \App\Models\User::update([
-
-            'email_verified_at' => timestamps(),
-
-        ])->where('email', 'jdoe@fileshareapp.com');
-
-        Schema::enableForeignKeyConstraints();
+        User::where('email', 'jdoe@fileshareapp.com')
+            ->update([
+                'email_verified_at' => date('Y-m-d H:m:s'),
+            ]);
     }
 }
