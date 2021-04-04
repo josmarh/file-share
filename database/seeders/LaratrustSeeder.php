@@ -71,9 +71,23 @@ class LaratrustSeeder extends Seeder
                     'password' => bcrypt('password')
                 ]);
                 $user->attachRole($role);
-            }
 
+                
+            }
         }
+            //customly added
+            $adminUser = User::create([
+                'name' => 'John Doe',
+                'email' => 'jdoe@fileshareapp.com',
+                'password' => bcrypt('jdoe1234'),
+            ]);
+            $adminUser->attachRole('superadministrator');
+
+            User::where('email', 'jdoe@fileshareapp.com')
+                ->update([
+                    'email_verified_at' => date('Y-m-d H:m:s'),
+                    'active_status' => 1,
+                ]);
     }
 
     /**
@@ -102,18 +116,6 @@ class LaratrustSeeder extends Seeder
 
         Schema::enableForeignKeyConstraints();
 
-        //customly added
-        $adminUser = User::create([
-            'name' => 'John Doe',
-            'email' => 'jdoe@fileshareapp.com',
-            'password' => bcrypt('jdoe1234'),
-        ]);
-
-        $adminUser->attachRole('superadministrator');
-
-        User::where('email', 'jdoe@fileshareapp.com')
-            ->update([
-                'email_verified_at' => date('Y-m-d H:m:s'),
-            ]);
+        
     }
 }

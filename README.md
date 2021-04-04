@@ -25,6 +25,8 @@ This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
     > `git clone https://github.com/Eric-Josh/file-share-v2`
 
 - Install all dependencies
+    > `cd file-share-v2`
+
     > `composer install or composer update`
 
     > `npm install`
@@ -49,7 +51,7 @@ This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
     > `php artisan serve`
 
 - Login with demo User
-    > `email: jdoe@fileshare.com`
+    > `email: jdoe@fileshareapp.com`
 
     > `password: jdoe1234`
 
