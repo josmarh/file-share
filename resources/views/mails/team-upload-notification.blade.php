@@ -11,7 +11,7 @@
 @component('mail::button', ['url' => route('file-uploads') ])
 View File
 @endcomponent
-@component('mail::button', ['url' => route('file-uploads.download',$fileId) ])
+@component('mail::button', ['url' => route('file-uploads.download',Crypt::encryptString($fileId)) ])
 Download File
 @endcomponent
 
