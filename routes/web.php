@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
+use Illuminate\Http\Request;
 use App\Http\Controllers\DataSourceController;
 use App\Http\Controllers\EmailSubscribersController;
 use App\Http\Controllers\FileUploadsController;
@@ -37,7 +37,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
 
     return redirect('/dashboard');
-})->middleware(['auth', 'signed'])->name('verification.verify');
+	})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
