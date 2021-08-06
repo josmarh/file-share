@@ -55,9 +55,5 @@ This application was developed with Laravel 8, PHP 7.4 and MYSQL 5.7.
 
     > `password: jdoe1234`
 
-- Run the queue cmd for mail notification 
-    > `php artisan queue:work`
-
-    - Ensure you change QUEUE_CONNECTION to database in .env 
-
-    For more details on queues visit [Laravel Queues](https://laravel.com/docs/8.x/queues).
+- Add a cron job for mail notification as the app uses as job queue
+    > `* * * * * /usr/local/bin/php /home/user/public_html/project/artisan schedule:run >> /home/user/public_html/project/storage/logs/jobs.log 2>&1`
